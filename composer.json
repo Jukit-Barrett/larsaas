@@ -23,6 +23,7 @@
     "autoload": {
         "psr-4": {
             "Mrzkit\\LaravelEloquentEnhance\\": "mrzkit/laravel-eloquent-enhance/",
+            "Mrzkit\\LaravelCodeGenerator\\": "mrzkit/laravel-code-generator/",
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"

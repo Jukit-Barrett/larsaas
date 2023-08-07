@@ -1,6 +1,6 @@
 <?php
 
-namespace Mrzkit\LaravelExtensionEloquent\Contracts;
+namespace Mrzkit\LaravelEloquentEnhance\Contracts;
 
 /**
  * 控制器服务契约
@@ -9,17 +9,17 @@ interface ControlServiceContract
 {
     /**
      * @desc 列表
-     * @param array $params
+     * @param array $inputParams
      * @return mixed
      */
-    public function index(array $params);
+    public function index(array $inputParams);
 
     /**
      * @desc 保存
-     * @param array $params
+     * @param array $inputParams
      * @return mixed
      */
-    public function store(array $params);
+    public function store(array $inputParams);
 
     /**
      * @desc 信息
@@ -31,10 +31,10 @@ interface ControlServiceContract
     /**
      * @desc 更新
      * @param int $id
-     * @param array $params
+     * @param array $inputParams
      * @return mixed
      */
-    public function update(int $id, array $params);
+    public function update(int $id, array $inputParams);
 
     /**
      * @desc 删除
@@ -42,14 +42,4 @@ interface ControlServiceContract
      * @return mixed
      */
     public function destroy(int $id);
-
-    /**
-     * @desc
-     * @param array $ids
-     * @param array $fields
-     * @param array $relations
-     * @param \Closure|null $before
-     * @return mixed
-     */
-    //public function many(array $ids, array $fields = ['id'], array $relations = [], \Closure $before = null);
 }

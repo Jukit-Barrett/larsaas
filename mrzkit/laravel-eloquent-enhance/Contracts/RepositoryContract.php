@@ -1,8 +1,9 @@
 <?php
 
-namespace Mrzkit\LaravelExtensionEloquent\Contracts;
+namespace Mrzkit\LaravelEloquentEnhance\Contracts;
 
 use Closure;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 interface RepositoryContract
 {
@@ -14,24 +15,24 @@ interface RepositoryContract
 
     /**
      * @desc 查
-     * @return mixed
+     * @return LengthAwarePaginator
      */
-    public function retrieve(array $fields = ['*'], array $relations = [], array $paginateParams = [], array $orderConfig = [], Closure $before = null, Closure $after = null);
+    public function retrieve(RetrieveQueryContract $retrieveContract): LengthAwarePaginator;
 
     /**
      * @desc 改
      * @param int $id
-     * @param array $data
-     * @return bool|null
+     * @param array $attributes
+     * @return bool
      */
-    public function update(int $id, array $data) : ?bool;
+    public function update(int $id, array $attributes): bool;
 
     /**
      * @desc 删
      * @param int $id 主键
      * @return bool|null
      */
-    public function delete(int $id) : ?bool;
+    public function delete(int $id): ?bool;
 
     /**
      * @desc 信息
@@ -51,5 +52,5 @@ interface RepositoryContract
      * @param \Closure|null $before
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function many(array $ids, array $fields = ['id'], array $relations = [], Closure $before = null);
+    public function multi(array $ids, array $fields = ['id'], array $relations = [], Closure $before = null);
 }

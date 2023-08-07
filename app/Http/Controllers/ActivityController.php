@@ -2,26 +2,29 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreActivityRequest;
-use App\Http\Requests\UpdateActivityRequest;
-use App\Models\Activity;
+use App\Http\Requests\Activity\IndexActivityRequest;
+use App\Http\Requests\Activity\StoreActivityRequest;
+use App\Http\Requests\Activity\UpdateActivityRequest;
+use App\Services\ActivityService;
+use Mrzkit\LaravelEloquentEnhance\Utils\ApiResponseEntity;
 
 class ActivityController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function __construct(protected ActivityService $service)
     {
-        //
+
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Display a listing of the resource.
      */
-    public function create()
+    public function index(IndexActivityRequest $request)
     {
-        //
+        $params = $request->validated();
+
+        $list = $this->service->index($params);
+
+        return ApiResponseEntity::success($list);
     }
 
     /**
@@ -29,38 +32,51 @@ class ActivityController extends Controller
      */
     public function store(StoreActivityRequest $request)
     {
-        //
+        $params = $request->validated();
+
+        $result = $this->service->store($params);
+
+        return ApiResponseEntity::success(["store" => $result]);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Activity $activity)
+    public function show(int $id)
     {
         //
-    }
+        $object = $this->service->show($id);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Activity $activity)
-    {
-        //
+        return ApiResponseEntity::success($object);
+
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateActivityRequest $request, Activity $activity)
+    public function update(UpdateActivityRequest $request, int $id)
     {
-        //
+        $params = $request->validated();
+
+        $result = $this->service->update($id, $params);
+
+        return ApiResponseEntity::success(["update" => $result]);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Activity $activity)
+    public function destroy(int $id)
     {
-        //
+        $result = $this->service->destroy($id);
+
+        return ApiResponseEntity::success(["destroy" => $result]);
+    }
+
+    public function restore(int $id)
+    {
+        $result = $this->service->restore($id);
+
+        return ApiResponseEntity::success(["restore" => $result]);
     }
 }

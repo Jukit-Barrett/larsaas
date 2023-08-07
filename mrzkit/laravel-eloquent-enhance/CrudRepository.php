@@ -1,173 +1,172 @@
 <?php
 
-namespace Mrzkit\LaravelExtensionEloquent;
+namespace Mrzkit\LaravelEloquentEnhance;
 
 use Closure;
-use Illuminate\Database\Eloquent\MassAssignmentException;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
-use Mrzkit\LaravelExtensionEloquent\Contracts\BatchContract;
-use Mrzkit\LaravelExtensionEloquent\Contracts\ModelContract;
-use Mrzkit\LaravelExtensionEloquent\Contracts\RepositoryContract;
-use Mrzkit\LaravelExtensionEloquent\Contracts\ResolverContract;
-use Mrzkit\LaravelExtensionEloquent\Contracts\TrashContract;
-use Mrzkit\LaravelExtensionEloquent\Exceptions\CrudException;
-use Mrzkit\LaravelExtensionEloquent\Model\CrudModel;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Mrzkit\LaravelEloquentEnhance\Contracts\ModelContract;
+use Mrzkit\LaravelEloquentEnhance\Contracts\RepositoryContract;
+use Mrzkit\LaravelEloquentEnhance\Contracts\ResolverContract;
+use Mrzkit\LaravelEloquentEnhance\Contracts\RetrieveQueryContract;
+use Mrzkit\LaravelEloquentEnhance\Contracts\TrashContract;
+use Mrzkit\LaravelEloquentEnhance\Exceptions\CrudException;
 
-abstract class CrudRepository implements ModelContract, RepositoryContract, BatchContract, ResolverContract, TrashContract
+abstract class CrudRepository implements ModelContract, RepositoryContract, ResolverContract, TrashContract
 {
     use ResolverTrait;
 
     /**
-     * @var CrudModel 模型
+     * @var Model 模型
      */
-    protected $_model;
+    protected $model;
 
     /**
-     * @desc
-     * @param CrudModel $model
+     * @desc 设置模型
+     * @param Model $model
      * @return $this
      */
-    public function setModel($model)
+    public function setModel(Model $model)
     {
-        $this->_model = $model;
+        $this->model = $model;
 
         return $this;
     }
 
     /**
-     * @desc
-     * @return CrudModel
+     * @desc 获取模型
+     * @return EnhanceModel
      */
-    public function getModel()
+    public function getModel(): Model
     {
-        return $this->_model;
+        return $this->model;
     }
 
     /**
-     * @desc
+     * @desc 获取克隆模型
+     * @return EnhanceModel
+     */
+    public function getCloneModel()
+    {
+        return clone $this->getModel();
+    }
+
+    /**
+     * @desc 创建
      * @param array $data
+     * @return bool
      */
     public function create(array $data)
     {
-        $model = clone $this->getModel();
+        $model = $this->getCloneModel();
 
-        if ( !$model->fill($data)->save()) {
-            throw new CrudException('Create data fail.');
-        }
-
-        return $model;
+        return $model->fill($data)->save();
     }
 
     /**
      * @desc 检索
-     * @param array|string[] $fields 查询字段
-     * @param array $relations 查询关联
-     * @param array $paginateParams 分页配置
-     * @param array $orderConfig 排序配置
-     * @param Closure|null $before 查询前处理
-     * @param Closure|null $after 查询后处理
-     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator|mixed
+     * @param RetrieveQueryContract $retrieveContract
+     * @return LengthAwarePaginator
      */
-    public function retrieve(array $fields = ['*'], array $relations = [], array $paginateParams = [], array $orderConfig = [], Closure $before = null, Closure $after = null)
+    public function retrieve(RetrieveQueryContract $retrieveContract): LengthAwarePaginator
     {
+        $columns = $retrieveContract->columns();
+
+        $paging = $retrieveContract->paging();
+
         $conf = [
-            'perPage'  => (int) ($paginateParams['perPage'] ?? 20),
-            'columns'  => $fields,
-            'pageName' => (string) ($paginateParams['pageName'] ?? 'page'),
-            'page'     => (int) ($paginateParams['page'] ?? 1),
+            "perPage" => (int)($paging["perPage"] ?? 20),
+            "columns" => empty($columns) ? $columns : ["*"],
+            "pageName" => (string)($paging["pageName"] ?? "page"),
+            "page" => (int)($paging["page"] ?? 1),
         ];
 
         $query = $this->getModel()->newQuery();
 
         // 查询前处理
-        if ( !is_null($before)) {
+        $before = $retrieveContract->before();
+        if (!is_null($before)) {
             $before($query);
         }
 
         // 关联解析器
-        if ( !empty($relations)) {
+        $relations = $retrieveContract->relations();
+        if (!empty($relations)) {
             $query = $this->relationResolver($query, $relations);
         }
 
         // 关联排序解析器
-        if ( !empty($orderConfig)) {
-            $query = $this->orderResolver($query, $orderConfig['orderKey'] ?? "", $orderConfig['orderTable'] ?? "");
+        $sortKey = $retrieveContract->sort();
+        if (!empty($sortKey)) {
+            $query = $this->sortResolver($query, $sortKey);
         }
 
-        // 排序和分页
-        $rows = $query->select($fields)->paginate($conf['perPage'], ['*'], $conf['pageName'], $conf['page']);
+        // 分页查询
+        $lengthAwarePaginator = $query->select($columns)->paginate($conf["perPage"], ["*"], $conf["pageName"], $conf["page"]);
 
-        if ( !is_null($after)) {
+        $after = $retrieveContract->after();
+        if (!is_null($after)) {
             $after($query);
         }
 
-        return $rows;
+        return $lengthAwarePaginator;
     }
 
     /**
-     * @desc
+     * @desc 更新
      * @param int $id
-     * @param array $data
-     * @return bool|null
+     * @param array $attributes
+     * @return bool
      */
-    public function update(int $id, array $data) : ?bool
+    public function update(int $id, array $attributes): bool
     {
-        $obj = $this->info($id);
+        $model = $this->getCloneModel();
 
-        if (is_null($obj)) {
-            return null;
+        $primaryName = $model->getKeyName();
+
+        $object = $model->newQuery()->select([$primaryName])->where($primaryName, $id)->first();
+
+        if (is_null($object)) {
+            return false;
         }
 
-        $updated = $obj->update($data);
-
-        if ( !$updated) {
-            throw new CrudException('Update data fail.');
-        }
-
-        return (bool) $updated;
+        return $object->update($attributes);
     }
 
     /**
-     * @desc
+     * @desc 删除
      * @param int $id
-     * @return bool|null
+     * @return bool
      */
-    public function delete(int $id) : ?bool
+    public function delete(int $id): bool
     {
-        $obj = $this->info($id);
+        $object = $this->info($id);
 
-        if (is_null($obj)) {
-            return null;
+        if (is_null($object)) {
+            return false;
         }
 
-        $deleted = $obj->delete();
-
-        if ( !$deleted) {
-            throw new CrudException('Delete data fail.');
-        }
-
-        return (bool) $deleted;
+        return $object->delete();
     }
 
     /**
-     * @desc
+     * @desc 数据信息
      * @param int $id
-     * @param array|string[] $fields
+     * @param array $fields
      * @param array $relations
      * @param Closure|null $before
-     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|mixed|object|null
+     * @return Model|null
      */
-    public function info(int $id, array $fields = ['id'], array $relations = [], Closure $before = null)
+    public function info(int $id, array $fields = ["id"], array $relations = [], Closure $before = null): ?Model
     {
         $query = $this->getModel()->newQuery();
 
-        if ( !is_null($before)) {
+        if (!is_null($before)) {
             $before($query);
         }
 
         // 关联解析器
-        if ( !empty($relations)) {
+        if (!empty($relations)) {
             $query = $this->relationResolver($query, $relations);
         }
 
@@ -177,216 +176,22 @@ abstract class CrudRepository implements ModelContract, RepositoryContract, Batc
     }
 
     /**
-     * @desc 恢复垃圾
-     * @param int $id
-     * @return bool|null
-     */
-    public function trashRestore(int $id) : ?bool
-    {
-        $obj = $this->trashInfo($id);
-
-        if (is_null($obj)) {
-            return null;
-        }
-
-        $restored = $obj->restore();
-
-        if ( !$restored) {
-            throw new CrudException('Restore data fail.');
-        }
-
-        return (bool) $restored;
-    }
-
-    /**
-     * @desc 更新垃圾
-     * @param int $id
-     * @param array $data
-     * @return bool|null
-     */
-    public function trashUpdate(int $id, array $data = []) : ?bool
-    {
-        $obj = $this->trashInfo($id);
-
-        if (is_null($obj)) {
-            return null;
-        }
-
-        $updated = $obj->update($data);
-
-        if ( !$updated) {
-            throw new CrudException('Update data fail.');
-        }
-
-        return (bool) $updated;
-    }
-
-    /**
-     * @desc 垃圾信息
-     * @param int $id
-     * @param array|string[] $fields
-     * @param array $relations
-     * @param Closure|null $before
-     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|mixed|object|null
-     */
-    public function trashInfo(int $id, array $fields = ['id'], array $relations = [], Closure $before = null)
-    {
-        $query = $this->getModel()->newQuery();
-
-        if ( !is_null($before)) {
-            $before($query);
-        }
-
-        // 关联解析器
-        if ( !empty($relations)) {
-            $query = $this->relationResolver($query, $relations);
-        }
-
-        $row = $query->select($fields)->where($this->getModel()->getKeyName(), $id)->withTrashed()->first();
-
-        return $row;
-    }
-
-    /**
-     * @desc 快速批量创建
-     * @param array $data
-     * @return bool
-     */
-    public function fastBatchCreate(array $data) : bool
-    {
-        $model = $this->getModel();
-
-        $tableName = $model->getTable();
-
-        $totallyGuarded = $model->totallyGuarded();
-
-        $insertData = [];
-
-        foreach ($data as $index => $dataItem) {
-            $tempData = [];
-            foreach ($model->overwriteFillableFromArray($dataItem) as $key => $val) {
-                if ($model->isFillable($key)) {
-                    $tempData[$key] = $val;
-                } elseif ($totallyGuarded) {
-                    $msg = sprintf('Add [%s] to fillable property to allow mass assignment on [%s].', $index, get_class($this));
-                    throw new MassAssignmentException($msg);
-                }
-            }
-
-            if ( !empty($tempData)) {
-                $insertData[] = $tempData;
-            }
-        }
-
-        $inserted = false;
-
-        if ( !empty($insertData)) {
-            $inserted = DB::table($tableName)->insert($insertData);
-        }
-
-        return $inserted;
-    }
-
-    /**
-     * @desc 安全批量创建
-     * @param array $data
-     * @return array
-     */
-    public function safeBatchCreate(array $data) : array
-    {
-        DB::beginTransaction();
-
-        try {
-            $list = [];
-
-            foreach ($data as $key => $dataItem) {
-                $model = clone $this->getModel();;
-
-                if ( !$model->fill($dataItem)->save()) {
-                    throw new CrudException("Safe batch create fail. index:{$key}");
-                }
-
-                $list[] = $model;
-            }
-
-            DB::commit();
-
-            return $list;
-        } catch (CrudException $e) {
-            DB::rollBack();
-
-            throw $e;
-        }
-    }
-
-    /**
-     * @desc 安全批量更新
-     * @param array $data
-     * @param Closure|null $custom
-     * @return array
-     */
-    public function safeBatchUpdate(array $data, Closure $custom = null) : array
-    {
-        DB::beginTransaction();
-
-        try {
-            $list = [];
-
-            foreach ($data as $dataItem) {
-                $cloneModel = clone $this->getModel();
-
-                $newQuery = $cloneModel->newQuery();
-
-                if (is_null($custom)) {
-                    if ( !isset($dataItem['_id'])) {
-                        throw new CrudException("Safe batch update fail, not found key _id.");
-                    }
-                    $model = $newQuery->find($dataItem['_id']);
-                } else {
-                    $model = $custom($dataItem, $newQuery, $cloneModel);
-                }
-
-                if (is_null($model)) {
-                    throw new CrudException("Safe batch update fail, instance is empty. _id:{$dataItem['_id']}");
-                }
-
-                if ( !($model instanceof Model)) {
-                    throw new CrudException("Safe batch update fail, instance not instanceof Model. _id:{$dataItem['_id']}");
-                }
-
-                if ( !$model->fill($dataItem)->update()) {
-                    throw new CrudException("Safe batch update fail. _id:{$dataItem['_id']}");
-                }
-
-                $list[] = $model;
-            }
-
-            DB::commit();
-
-            return $list;
-        } catch (CrudException $e) {
-            DB::rollBack();
-            throw $e;
-        }
-    }
-
-    /**
-     * @desc
+     * @desc 多条数据信息
      * @param array $ids
      * @param array $fields
      * @param array $relations
-     * @param \Closure|null $before
+     * @param Closure|null $before
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function many(array $ids, array $fields = ['id'], array $relations = [], \Closure $before = null)
+    public function multi(array $ids, array $fields = ['id'], array $relations = [], Closure $before = null)
     {
         $query = $this->getModel()->newQuery();
 
-        if ( !is_null($before)) {
+        if (!is_null($before)) {
             $before($query);
         }
 
-        if ( !empty($relations)) {
+        if (!empty($relations)) {
             $query = $this->relationResolver($query, $relations);
         }
 
@@ -394,4 +199,25 @@ abstract class CrudRepository implements ModelContract, RepositoryContract, Batc
 
         return $rows;
     }
+
+    /**
+     * @desc 恢复软删除的数据
+     * @param int $id
+     * @return bool
+     */
+    public function restore(int $id): bool
+    {
+        $query = $this->getModel()->newQuery();
+
+        $keyName = $this->getModel()->getKeyName();
+
+        $row = $query->select([$keyName])->where($keyName, $id)->withTrashed()->first();
+
+        if (is_null($row)) {
+            return false;
+        }
+
+        return $row->restore();
+    }
+
 }

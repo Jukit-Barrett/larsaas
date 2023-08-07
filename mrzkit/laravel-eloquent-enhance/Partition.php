@@ -1,6 +1,6 @@
 <?php
 
-namespace Mrzkit\LaravelExtensionEloquent;
+namespace Mrzkit\LaravelEloquentEnhance;
 
 use RuntimeException;
 
@@ -93,14 +93,14 @@ class Partition
 
         foreach ($partitionConfig as $item) {
             if ( !isset($item['low'])) {
-                throw new RuntimeException('low Not Default.');
+                throw new RuntimeException('key[low] Not Default.');
             }
 
             if ( !isset($item['high'])) {
-                throw new RuntimeException('high Not Default.');
+                throw new RuntimeException('key[high] Not Default.');
             }
             if ( !isset($item['partition'])) {
-                throw new RuntimeException('partition Not Default.');
+                throw new RuntimeException('key[partition] Not Default.');
             }
         }
 
@@ -126,7 +126,7 @@ class Partition
      * @desc 计算分表
      * @return int
      */
-    public function calculatePartition()
+    public function calculatePartition() : int
     {
         $pos = $this->calculateFactor();
 
@@ -153,14 +153,12 @@ class Partition
      * @desc 计算因子
      * @return int
      */
-    public function calculateFactor()
+    public function calculateFactor() : int
     {
         $partitionMaxCount = $this->getPartitionMaxCount();
 
         $partitionFactor = $this->getPartitionFactor();
 
-        $pos = $partitionFactor % $partitionMaxCount;
-
-        return $pos;
+        return $partitionFactor % $partitionMaxCount;
     }
 }

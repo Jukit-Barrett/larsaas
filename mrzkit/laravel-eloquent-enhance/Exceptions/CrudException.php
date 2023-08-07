@@ -1,6 +1,6 @@
 <?php
 
-namespace Mrzkit\LaravelExtensionEloquent\Exceptions;
+namespace Mrzkit\LaravelEloquentEnhance\Exceptions;
 
 use RuntimeException;
 

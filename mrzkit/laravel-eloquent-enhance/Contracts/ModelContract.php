@@ -1,7 +1,8 @@
 <?php
-namespace Mrzkit\LaravelExtensionEloquent\Contracts;
 
-use Mrzkit\LaravelExtensionEloquent\Model\EloquentModel;
+namespace Mrzkit\LaravelEloquentEnhance\Contracts;
+
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * 模型契约
@@ -10,14 +11,14 @@ interface ModelContract
 {
     /**
      * @desc 设置模型
-     * @param EloquentModel $model
+     * @param Model $model
      * @return $this
      */
-    public function setModel($model);
+    public function setModel(Model $model);
 
     /**
      * @desc 获取模型
-     * @return EloquentModel
+     * @return Model
      */
-    public function getModel();
+    public function getModel(): Model;
 }
