@@ -22,6 +22,7 @@
     },
     "autoload": {
         "psr-4": {
+            "Mrzkit\\TemplateEngine\\": "mrzkit/template-engine/",
             "Mrzkit\\LaravelEloquentEnhance\\": "mrzkit/laravel-eloquent-enhance/",
             "Mrzkit\\LaravelCodeGenerator\\": "mrzkit/laravel-code-generator/",
             "App\\": "app/",

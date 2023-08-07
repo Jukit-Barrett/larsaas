@@ -30,15 +30,24 @@ class TableInformation implements TableInformationContract
 
     public function __construct(string $tableName, string $tablePrefix = '', bool $tableShard = false, int $shardCount = 2, int $maxShardCount = 64)
     {
-        $this->tableName        = $tableName;
-        $this->tablePrefix      = $tablePrefix;
-        $this->tableFullName    = $this->tablePrefix . $this->tableName;
-        $this->tableShard       = $tableShard;
-        $this->shardCount       = $shardCount;
-        $this->maxShardCount    = $maxShardCount;
+        // 表名
+        $this->tableName = $tableName;
+        // 表前缀
+        $this->tablePrefix = $tablePrefix;
+        // 全表名
+        $this->tableFullName = $this->tablePrefix . $this->tableName;
+        // 分表
+        $this->tableShard = $tableShard;
+        // 分表总数
+        $this->shardCount = $shardCount;
+        // 最大分表数
+        $this->maxShardCount = $maxShardCount;
+        // 表字段全信息
         $this->tableFullColumns = [];
-        $this->tableFields      = [];
-        $this->tableSuffix      = "";
+        // 表字段
+        $this->tableFields = [];
+        // 表后缀
+        $this->tableSuffix = "";
 
         $this->initTable();
         $this->initTableFullColumns();
@@ -51,7 +60,7 @@ class TableInformation implements TableInformationContract
 
         $tableName = Str::snake($this->getTableName());
 
-        if ( !Schema::hasTable($tableName)) {
+        if (!Schema::hasTable($tableName)) {
             throw new \InvalidArgumentException("Not exists Normal table: {$tableName}.");
         }
 
@@ -69,7 +78,7 @@ class TableInformation implements TableInformationContract
             throw new \Exception("分表数必须是2~64");
         }
 
-        if ( !$this->isPower($this->getShardCount())) {
+        if (!$this->isPower($this->getShardCount())) {
             throw new \Exception("分表数必须是2次方数");
         }
 
@@ -86,7 +95,7 @@ class TableInformation implements TableInformationContract
         foreach ($listSuffix as $itemSuffix) {
             $shardTableName = $this->getTableName() . '_' . $itemSuffix;
 
-            if ( !Schema::hasTable($shardTableName)) {
+            if (!Schema::hasTable($shardTableName)) {
                 throw new \InvalidArgumentException("Not exists Shard table: {$shardTableName}.");
             }
 
@@ -157,7 +166,7 @@ class TableInformation implements TableInformationContract
     /**
      * @return string
      */
-    public function getTablePrefix() : string
+    public function getTablePrefix(): string
     {
         return $this->tablePrefix;
     }
@@ -165,7 +174,7 @@ class TableInformation implements TableInformationContract
     /**
      * @return string
      */
-    public function getTableName() : string
+    public function getTableName(): string
     {
         return $this->tableName;
     }
@@ -173,7 +182,7 @@ class TableInformation implements TableInformationContract
     /**
      * @return string
      */
-    public function getTableFullName() : string
+    public function getTableFullName(): string
     {
         return $this->tableFullName;
     }
@@ -181,7 +190,7 @@ class TableInformation implements TableInformationContract
     /**
      * @return false
      */
-    public function getTableShard() : bool
+    public function getTableShard(): bool
     {
         return $this->tableShard;
     }
@@ -189,7 +198,7 @@ class TableInformation implements TableInformationContract
     /**
      * @return int
      */
-    public function getShardCount() : int
+    public function getShardCount(): int
     {
         return $this->shardCount;
     }
@@ -197,7 +206,7 @@ class TableInformation implements TableInformationContract
     /**
      * @return array
      */
-    public function getTableFullColumns() : array
+    public function getTableFullColumns(): array
     {
         return $this->tableFullColumns;
     }
@@ -205,7 +214,7 @@ class TableInformation implements TableInformationContract
     /**
      * @return array
      */
-    public function getTableFields() : array
+    public function getTableFields(): array
     {
         return $this->tableFields;
     }
@@ -213,7 +222,7 @@ class TableInformation implements TableInformationContract
     /**
      * @return string
      */
-    public function getTableSuffix() : string
+    public function getTableSuffix(): string
     {
         return $this->tableSuffix;
     }
@@ -221,7 +230,7 @@ class TableInformation implements TableInformationContract
     /**
      * @return int
      */
-    public function getMaxShardCount() : int
+    public function getMaxShardCount(): int
     {
         return $this->maxShardCount;
     }
@@ -231,7 +240,7 @@ class TableInformation implements TableInformationContract
      * @param int $n
      * @return bool
      */
-    public function isPower(int $n) : bool
+    public function isPower(int $n): bool
     {
         if ($n < 2) {
             return false;
@@ -248,7 +257,7 @@ class TableInformation implements TableInformationContract
      * @desc
      * @return array
      */
-    public function getSuffixCount() : array
+    public function getSuffixCount(): array
     {
         $maxShardCount = $this->getMaxShardCount();
 
@@ -269,7 +278,7 @@ class TableInformation implements TableInformationContract
      * @desc
      * @return array
      */
-    public function getShardCountConfig() : array
+    public function getShardCountConfig(): array
     {
         $maxShardCount = $this->getMaxShardCount();
         $shardCount    = $this->getShardCount();
@@ -281,8 +290,8 @@ class TableInformation implements TableInformationContract
 
             $shardCountConfig[] = [
                 'partition' => ($i + 1) * $part,
-                'low'       => $i * $part,
-                'high'      => ($i + 1) * $part - 1,
+                'low' => $i * $part,
+                'high' => ($i + 1) * $part - 1,
             ];
         }
 

@@ -18,7 +18,7 @@ class TemplateHandler implements TemplateHandlerContract
     /**
      * @return TemplateContract
      */
-    public function getTemplateContract() : TemplateContract
+    public function getTemplateContract(): TemplateContract
     {
         return $this->templateContract;
     }
@@ -26,33 +26,41 @@ class TemplateHandler implements TemplateHandlerContract
     /**
      * @param TemplateContract $templateContract
      */
-    public function setTemplateContract(TemplateContract $templateContract) : TemplateHandler
+    public function setTemplateContract(TemplateContract $templateContract): TemplateHandler
     {
         $this->templateContract = $templateContract;
 
         return $this;
     }
 
-    public function getWriteResult() : bool
+    /**
+     * @desc 获取写入结果
+     * @return bool
+     */
+    public function getWriteResult(): bool
     {
         $templateContract = $this->getTemplateContract();
-        //
+        // 文件读取实例
         $reader = new TemplateFileReader($templateContract->getSourceTemplateFile());
-        //
+        // 替换引擎实例
         $engine = new TemplateEngine($reader);
-        //
+        // 初始化参数
         $engine->setContentReplacements($templateContract->getReplacementRules())->setContentReplacementsCallback($templateContract->getReplacementRuleCallbacks());
-        //
+        // 执行替换
         $engine->replaceContentReplacements()->replaceContentReplacementsCallback();
-        //
+        // 文件写入实例
         $writer = new TemplateFileWriter($templateContract->getSaveFilename());
-        //
+        // 写入并保存文件
         $result = $writer->setContent($engine->getReplaceResult())->setForce($templateContract->getForceCover())->saveFile();
 
         return $result;
     }
 
-    public function getReplaceResult() : string
+    /**
+     * @desc 获取替换结果
+     * @return string
+     */
+    public function getReplaceResult(): string
     {
         $templateContract = $this->getTemplateContract();
         //

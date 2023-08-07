@@ -6,6 +6,9 @@ use App\Http\Requests\Activity\IndexActivityRequest;
 use App\Http\Requests\Activity\StoreActivityRequest;
 use App\Http\Requests\Activity\UpdateActivityRequest;
 use App\Services\ActivityService;
+use Mrzkit\LaravelCodeGenerator\TableInformation;
+use Mrzkit\LaravelCodeGenerator\TemplateCreators\ControllerTemplateCreator;
+use Mrzkit\LaravelCodeGenerator\TemplateHandler;
 use Mrzkit\LaravelEloquentEnhance\Utils\ApiResponseEntity;
 
 class ActivityController extends Controller
@@ -78,5 +81,29 @@ class ActivityController extends Controller
         $result = $this->service->restore($id);
 
         return ApiResponseEntity::success(["restore" => $result]);
+    }
+
+    public function codeGenerator()
+    {
+        $inputParams = [
+            "tableShard" => 0,
+            "shardCount" => 0,
+            "maxShardCount" => 0,
+            "tablePrefix" => env('DB_PREFIX', ""),
+            "tableName" => "files",
+            "controls" => "Files",
+        ];
+
+        $tableInformation = new TableInformation($inputParams["tableName"], $inputParams["tablePrefix"], $inputParams["tableShard"], $inputParams["shardCount"], $inputParams["maxShardCount"]);
+
+        $templateHandler = new TemplateHandler();
+
+        // Controller
+        $creator = new ControllerTemplateCreator($inputParams["controls"], $templateHandler);
+
+        $result["ControllerTemplateCreator"] = $creator->handle();
+
+        return ApiResponseEntity::success($result);
+
     }
 }
