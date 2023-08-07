@@ -6,8 +6,10 @@ use App\Http\Requests\Activity\IndexActivityRequest;
 use App\Http\Requests\Activity\StoreActivityRequest;
 use App\Http\Requests\Activity\UpdateActivityRequest;
 use App\Services\ActivityService;
+use Illuminate\Support\Str;
 use Mrzkit\LaravelCodeGenerator\TableInformation;
 use Mrzkit\LaravelCodeGenerator\TemplateCreators\ControllerTemplateCreator;
+use Mrzkit\LaravelCodeGenerator\TemplateCreators\ServiceTemplateCreator;
 use Mrzkit\LaravelCodeGenerator\TemplateHandler;
 use Mrzkit\LaravelEloquentEnhance\Utils\ApiResponseEntity;
 
@@ -86,22 +88,27 @@ class ActivityController extends Controller
     public function codeGenerator()
     {
         $inputParams = [
-            "tableShard" => 0,
-            "shardCount" => 0,
-            "maxShardCount" => 0,
-            "tablePrefix" => env('DB_PREFIX', ""),
-            "tableName" => "files",
-            "controls" => "Files",
+            "tablePrefix" => "ch_",
+            "tableName" => "system_header",
+//            "controls" => "SystemHeader",
         ];
 
-        $tableInformation = new TableInformation($inputParams["tableName"], $inputParams["tablePrefix"], $inputParams["tableShard"], $inputParams["shardCount"], $inputParams["maxShardCount"]);
+        $tableInformation = new TableInformation($inputParams["tableName"], $inputParams["tablePrefix"]);
 
         $templateHandler = new TemplateHandler();
 
+        $controlName = Str::studly($tableInformation->getTableName());
+
         // Controller
-        $creator = new ControllerTemplateCreator($inputParams["controls"], $templateHandler);
+        $creator = new ControllerTemplateCreator($controlName, $templateHandler);
 
         $result["ControllerTemplateCreator"] = $creator->handle();
+
+
+        // Service
+        $creator = new ServiceTemplateCreator($controlName, $templateHandler, $tableInformation);
+
+        $result["ServiceTemplateCreator"] = $creator->handle();
 
         return ApiResponseEntity::success($result);
 

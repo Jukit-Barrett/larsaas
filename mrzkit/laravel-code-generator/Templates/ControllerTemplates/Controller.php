@@ -24,20 +24,16 @@ class Controller implements TemplateHandleContract
     /**
      * @return string
      */
-    public function getControlName() : string
+    public function getControlName(): string
     {
         return $this->controlName;
     }
 
-    public function handle() : TemplateContract
+    public function handle(): TemplateContract
     {
         $fullControlName = $this->getControlName();
 
         $controlName = static::processControlName($fullControlName);
-
-        $namespacePath = static::processNamespacePath($fullControlName);
-
-        $directoryPath = static::processDirectoryPath($fullControlName);
 
         //********************************************************
 
@@ -45,7 +41,7 @@ class Controller implements TemplateHandleContract
         $forceCover = false;
 
         // 保存目录
-        $saveDirectory = app()->basePath("app/Http/Controllers/{$directoryPath}{$controlName}Controls");
+        $saveDirectory = app()->basePath("app/Http/Controllers");
 
         // 保存文件名称
         $saveFilename = $saveDirectory . '/' . $controlName . 'Controller.php';
@@ -55,14 +51,14 @@ class Controller implements TemplateHandleContract
 
         // 替换规则
         $replacementRules = [
-            '/{{NAMESPACE_PATH}}/' => $namespacePath,
-            '/{{RNT}}/'            => $controlName,
+            //'/{{NAMESPACE_PATH}}/' => $namespacePath,
+            '/{{RNT}}/' => $controlName,
         ];
 
         // 替换规则-回调
         $replacementRuleCallbacks = [
             // 将 $Good 替换为 ->good
-            '/(\\$)(' . $controlName . ')/' => function ($match){
+            '/(\\$)(' . $controlName . ')/' => function ($match) {
                 //$full   = $match[0];
                 $symbol   = $match[1];
                 $name     = $match[2];
@@ -71,7 +67,7 @@ class Controller implements TemplateHandleContract
                 return $symbol . $humpName;
             },
             // 将 ->Good 替换为 ->good
-            '/(\->)(' . $controlName . ')/' => function ($match){
+            '/(\->)(' . $controlName . ')/' => function ($match) {
                 //$full   = $match[0];
                 $symbol = $match[1];
                 $name   = $match[2];
@@ -80,7 +76,8 @@ class Controller implements TemplateHandleContract
 
                 return $symbol . $humpName;
             },
-            '/(\->)(\\$)(\w+)/'             => function ($match){
+            //
+            '/(\->)(\\$)(\w+)/' => function ($match) {
                 $symbol   = $match[1];
                 $name     = $match[3];
                 $humpName = strtolower(substr($name, 0, 2)) . substr($name, 2);

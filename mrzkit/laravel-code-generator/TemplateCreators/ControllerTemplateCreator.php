@@ -25,18 +25,23 @@ class ControllerTemplateCreator implements TemplateCreatorContract
         $this->templateHandlerContract = $templateHandlerContract;
     }
 
-    protected function createController() : TemplateHandleContract
+    /**
+     * @desc 返回创建控制器的实例
+     * @return TemplateHandleContract
+     */
+    protected function createController(): TemplateHandleContract
     {
         return new Controller($this->controlName);
     }
 
-    public function handle() : array
+    public function handle(): array
     {
         $result = [];
 
         $templateHandler = $this->templateHandlerContract->setTemplateContract($this->createController()->handle());
-        $result[]        = [
-            'result'       => $templateHandler->getWriteResult(),
+
+        $result[] = [
+            'result' => $templateHandler->getWriteResult(),
             'saveFilename' => $templateHandler->getTemplateContract()->getSaveFilename(),
         ];
 

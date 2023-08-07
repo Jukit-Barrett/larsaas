@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\{{RNT}}\Index{{RNT}}Request;
-use App\Http\Requests\{{RNT}}\Store{{RNT}}Request;
-use App\Http\Requests\{{RNT}}\Update{{RNT}}Request;
-use App\Services\{{RNT}}Service;
+use App\Http\Requests\SystemHeader\IndexSystemHeaderRequest;
+use App\Http\Requests\SystemHeader\StoreSystemHeaderRequest;
+use App\Http\Requests\SystemHeader\UpdateSystemHeaderRequest;
+use App\Services\SystemHeaderService;
 use Mrzkit\LaravelEloquentEnhance\Utils\ApiResponseEntity;
 
-class {{RNT}}Controller extends Controller
+class SystemHeaderController extends Controller
 {
-    public function __construct(protected {{RNT}}Service $service)
+    public function __construct(protected SystemHeaderService $service)
     {
 
     }
@@ -18,7 +18,7 @@ class {{RNT}}Controller extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Index{{RNT}}Request $request)
+    public function index(IndexSystemHeaderRequest $request)
     {
         $params = $request->validated();
 
@@ -30,7 +30,7 @@ class {{RNT}}Controller extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Store{{RNT}}Request $request)
+    public function store(StoreSystemHeaderRequest $request)
     {
         $params = $request->validated();
 
@@ -54,7 +54,7 @@ class {{RNT}}Controller extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Update{{RNT}}Request $request, int $id)
+    public function update(UpdateSystemHeaderRequest $request, int $id)
     {
         $params = $request->validated();
 

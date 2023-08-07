@@ -35,48 +35,33 @@ class ServiceTemplateCreator implements TemplateCreatorContract
         $this->tableInformationContract = $tableInformationContract;
     }
 
-    protected function createService() : TemplateHandleContract
+    protected function createService(): TemplateHandleContract
     {
         return new Service($this->controlName, $this->tableInformationContract);
     }
 
-    protected function createBusinessService() : TemplateHandleContract
+    protected function createBusinessService(): TemplateHandleContract
     {
         return new BusinessService($this->controlName, $this->tableInformationContract);
     }
 
-    protected function createServiceFactory() : TemplateHandleContract
+    protected function createServiceFactory(): TemplateHandleContract
     {
         return new ServiceFactory($this->controlName, $this->tableInformationContract);
     }
 
-    protected function createRenderService() : TemplateHandleContract
+    protected function createRenderService(): TemplateHandleContract
     {
         return new RenderService($this->controlName, $this->tableInformationContract);
     }
 
-    public function handle() : array
+    public function handle(): array
     {
         $result = [];
 
         $templateHandler = $this->templateHandlerContract->setTemplateContract($this->createService()->handle());
         $result[]        = [
-            'result'       => $templateHandler->getWriteResult(),
-            'saveFilename' => $templateHandler->getTemplateContract()->getSaveFilename(),
-        ];
-        $templateHandler = $this->templateHandlerContract->setTemplateContract($this->createBusinessService()->handle());
-        $result[]        = [
-            'result'       => $templateHandler->getWriteResult(),
-            'saveFilename' => $templateHandler->getTemplateContract()->getSaveFilename(),
-        ];
-        $templateHandler = $this->templateHandlerContract->setTemplateContract($this->createServiceFactory()->handle());
-        $result[]        = [
-            'result'       => $templateHandler->getWriteResult(),
-            'saveFilename' => $templateHandler->getTemplateContract()->getSaveFilename(),
-        ];
-        $templateHandler = $this->templateHandlerContract->setTemplateContract($this->createRenderService()->handle());
-        $result[]        = [
-            'result'       => $templateHandler->getWriteResult(),
+            'result' => $templateHandler->getWriteResult(),
             'saveFilename' => $templateHandler->getTemplateContract()->getSaveFilename(),
         ];
 

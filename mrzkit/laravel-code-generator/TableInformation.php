@@ -28,7 +28,7 @@ class TableInformation implements TableInformationContract
     // 表后缀
     private $tableSuffix;
 
-    public function __construct(string $tableName, string $tablePrefix = '', bool $tableShard = false, int $shardCount = 2, int $maxShardCount = 64)
+    public function __construct(string $tableName, string $tablePrefix = '')
     {
         // 表名
         $this->tableName = $tableName;
@@ -36,18 +36,21 @@ class TableInformation implements TableInformationContract
         $this->tablePrefix = $tablePrefix;
         // 全表名
         $this->tableFullName = $this->tablePrefix . $this->tableName;
+
         // 分表
-        $this->tableShard = $tableShard;
+        $this->tableShard = false;
         // 分表总数
-        $this->shardCount = $shardCount;
+        $this->shardCount = 0;
         // 最大分表数
-        $this->maxShardCount = $maxShardCount;
+        $this->maxShardCount = 0;
+        // 表后缀
+        $this->tableSuffix = "";
+
         // 表字段全信息
         $this->tableFullColumns = [];
         // 表字段
         $this->tableFields = [];
-        // 表后缀
-        $this->tableSuffix = "";
+
 
         $this->initTable();
         $this->initTableFullColumns();
@@ -56,18 +59,11 @@ class TableInformation implements TableInformationContract
 
     private function initNormalTable()
     {
-        $this->tablePrefix = strlen($this->getTablePrefix()) > 0 ? Str::snake($this->getTablePrefix()) : $this->getTablePrefix();
+        $tableFullName = Str::snake($this->getTableFullName());
 
-        $tableName = Str::snake($this->getTableName());
-
-        if (!Schema::hasTable($tableName)) {
-            throw new \InvalidArgumentException("Not exists Normal table: {$tableName}.");
+        if (!Schema::hasTable($tableFullName)) {
+            throw new \InvalidArgumentException("Not exists table: {$tableFullName}.");
         }
-
-        $this->tableName     = Str::snake($tableName);
-        $this->tableFullName = Str::snake($this->tablePrefix . $this->tableName);
-        $this->tableShard    = false;
-        $this->tableSuffix   = "";
     }
 
     private function initShardTable()

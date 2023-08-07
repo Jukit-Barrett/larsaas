@@ -104,11 +104,7 @@ class Service implements TemplateHandleContract
         $saveFilename = $saveDirectory . '/' . $controlName . 'Service.php';
 
         // 模板文件
-        if ($this->getTableInformationContract()->getTableShard()) {
-            $sourceTemplateFile = __DIR__ . '/stpl/Service.tpl';
-        } else {
-            $sourceTemplateFile = __DIR__ . '/tpl/Service.tpl';
-        }
+        $sourceTemplateFile = __DIR__ . '/tpl/Service.tpl';
 
         // 替换规则
         $replacementRules = [
@@ -121,6 +117,8 @@ class Service implements TemplateHandleContract
             '/{{REPOSITORY}}/'               => $repository,
             '/{{REPOSITORY_NAME}}/'          => $repositoryName,
         ];
+
+        dd($replacementRules);
 
         // 替换规则-回调
         $replacementRuleCallbacks = [

@@ -24,7 +24,7 @@ Route::group([], function (Router $router) {
 
     $router->post("activity-restore/{id}", [\App\Http\Controllers\ActivityController::class, "restore"]);
 
-    $router->post("codeGenerator", [\App\Http\Controllers\ActivityController::class, "codeGenerator"]);
+    $router->get("codeGenerator", [\App\Http\Controllers\ActivityController::class, "codeGenerator"]);
 
 });
 
