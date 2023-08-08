@@ -10,6 +10,7 @@ use Mrzkit\LaravelCodeGenerator\TableDetail;
 use Mrzkit\LaravelCodeGenerator\TableInformation;
 use Mrzkit\LaravelCodeGenerator\TemplateCreators\ControllerTemplateCreator;
 use Mrzkit\LaravelCodeGenerator\TemplateCreators\ModelTemplateCreator;
+use Mrzkit\LaravelCodeGenerator\TemplateCreators\RepositoryFactoryTemplateCreator;
 use Mrzkit\LaravelCodeGenerator\TemplateCreators\RepositoryTemplateCreator;
 use Mrzkit\LaravelCodeGenerator\TemplateCreators\RequestTemplateCreator;
 use Mrzkit\LaravelCodeGenerator\TemplateCreators\RouteTemplateCreator;
@@ -141,11 +142,15 @@ class ActivityController extends Controller
 
         $result["UnitTestTemplateCreator"] = $creator->handle();
 
-        // Factory
+        // ServiceFactory
         $creator = new ServiceFactoryTemplateCreator($tableInformation);
 
         $result["ServiceFactoryTemplateCreator"] = $creator->handle();
 
+        // RepositoryFactory
+        $creator = new RepositoryFactoryTemplateCreator($tableInformation);
+
+        $result["RepositoryFactoryTemplateCreator"] = $creator->handle();
 
         return ApiResponseEntity::success($result);
 

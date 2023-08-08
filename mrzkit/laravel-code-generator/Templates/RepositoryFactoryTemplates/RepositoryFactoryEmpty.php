@@ -1,6 +1,6 @@
 <?php
 
-namespace Mrzkit\LaravelCodeGenerator\Templates\ServiceFactoryTemplates;
+namespace Mrzkit\LaravelCodeGenerator\Templates\RepositoryFactoryTemplates;
 
 use Illuminate\Support\Str;
 use InvalidArgumentException;

@@ -5,10 +5,10 @@ namespace Mrzkit\LaravelCodeGenerator\TemplateCreators;
 use Mrzkit\LaravelCodeGenerator\Contracts\TableInformationContract;
 use Mrzkit\LaravelCodeGenerator\Contracts\TemplateCreatorContract;
 use Mrzkit\LaravelCodeGenerator\Contracts\TemplateHandleContract;
-use Mrzkit\LaravelCodeGenerator\Templates\ServiceFactoryTemplates\ServiceFactoryEmpty;
-use Mrzkit\LaravelCodeGenerator\Templates\ServiceFactoryTemplates\ServiceFactoryReplace;
+use Mrzkit\LaravelCodeGenerator\Templates\RepositoryFactoryTemplates\RepositoryFactoryEmpty;
+use Mrzkit\LaravelCodeGenerator\Templates\RepositoryFactoryTemplates\RepositoryFactoryReplace;
 
-class ServiceFactoryTemplateCreator implements TemplateCreatorContract
+class RepositoryFactoryTemplateCreator implements TemplateCreatorContract
 {
     /**
      * @var TableInformationContract
@@ -20,14 +20,14 @@ class ServiceFactoryTemplateCreator implements TemplateCreatorContract
         $this->tableInformationContract = $tableInformationContract;
     }
 
-    protected function createServiceFactoryEmpty(): TemplateHandleContract
+    protected function createRepositoryFactoryEmpty(): TemplateHandleContract
     {
-        return new ServiceFactoryEmpty($this->tableInformationContract);
+        return new RepositoryFactoryEmpty($this->tableInformationContract);
     }
 
-    protected function createServiceFactoryReplace(string $content): TemplateHandleContract
+    protected function createRepositoryFactoryReplace(string $content): TemplateHandleContract
     {
-        return new ServiceFactoryReplace($this->tableInformationContract, $content);
+        return new RepositoryFactoryReplace($this->tableInformationContract, $content);
     }
 
     public function handle(): array
@@ -37,13 +37,13 @@ class ServiceFactoryTemplateCreator implements TemplateCreatorContract
         $result = [];
 
         // 处理
-        $templateHandler = $this->createServiceFactoryEmpty()->handle();
+        $templateHandler = $this->createRepositoryFactoryEmpty()->handle();
 
         // 获取替换结果
         $replaceString = $templateHandler->getReplaceResult();
 
         // 添加替换结果再处理
-        $templateHandler = $this->createServiceFactoryReplace($replaceString)->handle();
+        $templateHandler = $this->createRepositoryFactoryReplace($replaceString)->handle();
 
         $result[] = [
             'result' => $templateHandler->getWriteResult(),
