@@ -51,7 +51,6 @@ class Controller implements TemplateHandleContract
 
         // 替换规则
         $replacementRules = [
-            //'/{{NAMESPACE_PATH}}/' => $namespacePath,
             '/{{RNT}}/' => $controlName,
         ];
 

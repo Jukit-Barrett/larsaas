@@ -137,11 +137,4 @@ class ServiceUpdateCodeTemplate implements CodeTemplate
 
         return $codeString;
     }
-
-
-    public static function main()
-    {
-        $serviceUpdate = new ServiceUpdateCodeTemplate($tableInformationContract);
-        $serviceUpdate->setIgnoreFields([])->setItemName("item")->setParamName("params");
-    }
 }

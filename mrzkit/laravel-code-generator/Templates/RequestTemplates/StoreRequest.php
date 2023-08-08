@@ -15,27 +15,13 @@ class StoreRequest implements TemplateHandleContract
     use TemplateUtil;
 
     /**
-     * @var string
-     */
-    private $controlName;
-
-    /**
      * @var TableInformationContract
      */
     private $tableInformationContract;
 
-    public function __construct(string $controlName, TableInformationContract $tableInformationContract)
+    public function __construct(TableInformationContract $tableInformationContract)
     {
-        $this->controlName              = $controlName;
         $this->tableInformationContract = $tableInformationContract;
-    }
-
-    /**
-     * @return string
-     */
-    public function getControlName(): string
-    {
-        return $this->controlName;
     }
 
     /**
@@ -53,13 +39,9 @@ class StoreRequest implements TemplateHandleContract
 
     public function handle(): TemplateGeneration
     {
-        $fullControlName = $this->getControlName();
+        $fullControlName = $this->tableInformationContract->getRenderTableName();
 
         $controlName = static::processControlName($fullControlName);
-
-        $namespacePath = static::processNamespacePath($fullControlName);
-
-        $directoryPath = static::processDirectoryPath($fullControlName);
 
         $requestStoreRuleCodeTemplate = new RequestStoreRuleCodeTemplate($this->tableInformationContract);
 
@@ -85,7 +67,6 @@ class StoreRequest implements TemplateHandleContract
 
         // 替换规则
         $replacementRules = [
-            '/{{NAMESPACE_PATH}}/' => $namespacePath,
             '/{{RNT}}/' => $controlName,
             '/{{REQUEST_STORE_RULE_TPL}}/' => $requestStoreRuleCodeTemplate->getCodeString(),
             '/{{REQUEST_STORE_MESSAGE_TPL}}/' => $requestStoreMessageCodeTemplate->getCodeString(),

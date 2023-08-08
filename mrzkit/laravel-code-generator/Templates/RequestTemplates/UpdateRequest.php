@@ -15,27 +15,13 @@ class UpdateRequest implements TemplateHandleContract
     use TemplateUtil;
 
     /**
-     * @var string
-     */
-    private $controlName;
-
-    /**
      * @var TableInformationContract
      */
     private $tableInformationContract;
 
-    public function __construct(string $controlName, TableInformationContract $tableInformationContract)
+    public function __construct(TableInformationContract $tableInformationContract)
     {
-        $this->controlName              = $controlName;
         $this->tableInformationContract = $tableInformationContract;
-    }
-
-    /**
-     * @return string
-     */
-    public function getControlName(): string
-    {
-        return $this->controlName;
     }
 
     /**
@@ -53,11 +39,9 @@ class UpdateRequest implements TemplateHandleContract
 
     public function handle(): TemplateGeneration
     {
-        $fullControlName = $this->getControlName();
+        $fullControlName = $this->tableInformationContract->getRenderTableName();
 
         $controlName = static::processControlName($fullControlName);
-
-        $namespacePath = static::processNamespacePath($fullControlName);
 
         $requestUpdateRuleCodeTemplate = new RequestUpdateRuleCodeTemplate($this->tableInformationContract);
 
@@ -79,7 +63,6 @@ class UpdateRequest implements TemplateHandleContract
 
         // 替换规则
         $replacementRules = [
-            '/{{NAMESPACE_PATH}}/' => $namespacePath,
             '/{{RNT}}/' => $controlName,
             '/{{REQUEST_UPDATE_RULE_TPL}}/' => $requestUpdateRuleCodeTemplate->getCodeString(),
             '/{{REQUEST_UPDATE_MESSAGE_TPL}}/' => $requestUpdateMessageCodeTemplate->getCodeString(),

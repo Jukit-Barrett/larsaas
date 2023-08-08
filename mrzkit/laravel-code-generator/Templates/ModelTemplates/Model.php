@@ -58,8 +58,6 @@ class Model implements TemplateHandleContract
         $replacementRules = [
             '/{{RNT}}/' => $tableName,
             '/{{FILL_ABLE_TPL}}/' => $modelFillableCodeTemplate->getCodeString(),
-            //'/{{MAX_SHARD_COUNT}}/' => $tableInformationContract->getMaxShardCount(),
-            //'/{{SHARD_CONFIG_TPL}}/' => $shardConfigCodeTemplate->getCodeString(),
         ];
 
         // 替换规则-回调

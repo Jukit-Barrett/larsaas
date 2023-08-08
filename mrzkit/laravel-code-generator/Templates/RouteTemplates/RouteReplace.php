@@ -3,6 +3,7 @@
 namespace Mrzkit\LaravelCodeGenerator\Templates\RouteTemplates;
 
 use Illuminate\Support\Str;
+use Mrzkit\LaravelCodeGenerator\Contracts\TableInformationContract;
 use Mrzkit\LaravelCodeGenerator\Contracts\TemplateGeneration;
 use Mrzkit\LaravelCodeGenerator\Contracts\TemplateHandleContract;
 use Mrzkit\LaravelCodeGenerator\TemplateGenerator;
@@ -15,30 +16,21 @@ class RouteReplace implements TemplateHandleContract
     /**
      * @var string
      */
-    private $controlName;
-
-    /**
-     * @var string
-     */
     private $content;
 
-    public function __construct(string $controlName, string $content)
-    {
-        $this->controlName = $controlName;
-        $this->content     = $content;
-    }
-
     /**
-     * @return string
+     * @var TableInformationContract
      */
-    public function getControlName(): string
+    private $tableInformationContract;
+
+    public function __construct(TableInformationContract $tableInformationContract)
     {
-        return $this->controlName;
+        $this->tableInformationContract = $tableInformationContract;
     }
 
     public function handle(): TemplateGeneration
     {
-        $fullControlName = $this->getControlName();
+        $fullControlName = $this->tableInformationContract->getRenderTableName();
 
         $firstControlName = static::processFirstControlName($fullControlName);
 

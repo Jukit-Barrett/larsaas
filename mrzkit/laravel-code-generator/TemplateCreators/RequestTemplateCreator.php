@@ -23,18 +23,18 @@ class RequestTemplateCreator implements TemplateCreatorContract
 
     protected function createIndexRequest(): TemplateHandleContract
     {
-        return new IndexRequest($this->tableInformationContract->getRenderTableName());
+        return new IndexRequest($this->tableInformationContract);
     }
 
 
     protected function createStoreRequest(): TemplateHandleContract
     {
-        return new StoreRequest($this->tableInformationContract->getRenderTableName(), $this->tableInformationContract);
+        return new StoreRequest($this->tableInformationContract);
     }
 
     protected function createUpdateRequest(): TemplateHandleContract
     {
-        return new UpdateRequest($this->tableInformationContract->getRenderTableName(), $this->tableInformationContract);
+        return new UpdateRequest($this->tableInformationContract);
     }
 
     public function handle(): array

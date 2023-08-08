@@ -35,7 +35,7 @@ class ShardConfigCodeTemplate implements CodeTemplate
 
     public function getCodeString(): string
     {
-        $shardCountConfig = $this->tableInformationContract->getShardCountConfig();
+        $shardCountConfig = $this->tableInformationContract->getShardingConfig();
 
         $tpl = "";
 

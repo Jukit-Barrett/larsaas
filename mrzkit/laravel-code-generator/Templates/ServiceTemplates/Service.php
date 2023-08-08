@@ -15,27 +15,13 @@ class Service implements TemplateHandleContract
     use TemplateUtil;
 
     /**
-     * @var string 控制器名称
-     */
-    private $controlName;
-
-    /**
      * @var TableInformationContract
      */
     private $tableInformationContract;
 
-    public function __construct(string $controlName, TableInformationContract $tableInformationContract)
+    public function __construct(TableInformationContract $tableInformationContract)
     {
-        $this->controlName              = $controlName;
         $this->tableInformationContract = $tableInformationContract;
-    }
-
-    /**
-     * @return string
-     */
-    public function getControlName(): string
-    {
-        return $this->controlName;
     }
 
     /**
@@ -52,7 +38,7 @@ class Service implements TemplateHandleContract
 
     public function handle(): TemplateGeneration
     {
-        $fullControlName = $this->getControlName();
+        $fullControlName = $this->tableInformationContract->getRenderTableName();
 
         $controlName = static::processControlName($fullControlName);
 

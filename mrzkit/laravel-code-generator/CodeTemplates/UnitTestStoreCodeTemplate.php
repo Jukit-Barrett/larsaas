@@ -41,9 +41,6 @@ class UnitTestStoreCodeTemplate implements CodeTemplate
 
         $tableFullColumns = $this->tableInformationContract->getTableFullColumns();
 
-        /** @var \Faker\Generator::class $faker */
-        $faker = app(\Faker\Generator::class);
-
         $codeString = "";
         foreach ($tableFullColumns as $column) {
             if (in_array($column->Field, $ignoreFields)) {
@@ -62,7 +59,7 @@ class UnitTestStoreCodeTemplate implements CodeTemplate
                 $type     = "(double)";
                 $val      = random_int(0, $matchResult["max"] ?? 2147483647);;
             } else if (!empty($matcher->matchString())) {
-                $text     = $faker->realTextBetween(5, 100);
+                $text     = fake()->realTextBetween(5, 100);
                 $text     = str_replace('"', '', $text);
                 $text     = addslashes($text);
                 $template = '"%s" => %s %s,%s';
@@ -73,7 +70,7 @@ class UnitTestStoreCodeTemplate implements CodeTemplate
                 $type     = "";
                 $val      = "date('Y-m-d H:i:s')";
             } else {
-                $text     = $faker->realTextBetween(5, 100);
+                $text     = fake()->realTextBetween(5, 100);
                 $text     = str_replace('"', '', $text);
                 $text     = addslashes($text);
                 $template = '"%s" => %s %s,%s';

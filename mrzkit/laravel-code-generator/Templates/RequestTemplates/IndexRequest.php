@@ -2,6 +2,7 @@
 
 namespace Mrzkit\LaravelCodeGenerator\Templates\RequestTemplates;
 
+use Mrzkit\LaravelCodeGenerator\Contracts\TableInformationContract;
 use Mrzkit\LaravelCodeGenerator\Contracts\TemplateGeneration;
 use Mrzkit\LaravelCodeGenerator\Contracts\TemplateHandleContract;
 use Mrzkit\LaravelCodeGenerator\TemplateGenerator;
@@ -12,37 +13,20 @@ class IndexRequest implements TemplateHandleContract
     use TemplateUtil;
 
     /**
-     * @var string 控制器名称
+     * @var TableInformationContract
      */
-    private $controlName;
+    private $tableInformationContract;
 
-    /**
-     * @var string 数据表名称
-     */
-    private $tableName;
-
-    public function __construct(string $controlName)
+    public function __construct(TableInformationContract $tableInformationContract)
     {
-        $this->controlName = $controlName;
-    }
-
-    /**
-     * @return string
-     */
-    public function getControlName(): string
-    {
-        return $this->controlName;
+        $this->tableInformationContract = $tableInformationContract;
     }
 
     public function handle(): TemplateGeneration
     {
-        $fullControlName = $this->getControlName();
+        $fullControlName = $this->tableInformationContract->getRenderTableName();
 
         $controlName = static::processControlName($fullControlName);
-
-        $namespacePath = static::processNamespacePath($fullControlName);
-
-        $directoryPath = static::processDirectoryPath($fullControlName);
 
         //********************************************************
 
@@ -60,7 +44,6 @@ class IndexRequest implements TemplateHandleContract
 
         // 替换规则
         $replacementRules = [
-            '/{{NAMESPACE_PATH}}/' => $namespacePath,
             '/{{RNT}}/' => $controlName,
         ];
 

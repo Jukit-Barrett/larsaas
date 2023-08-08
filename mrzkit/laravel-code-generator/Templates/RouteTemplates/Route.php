@@ -4,6 +4,7 @@ namespace Mrzkit\LaravelCodeGenerator\Templates\RouteTemplates;
 
 use Illuminate\Support\Str;
 use InvalidArgumentException;
+use Mrzkit\LaravelCodeGenerator\Contracts\TableInformationContract;
 use Mrzkit\LaravelCodeGenerator\Contracts\TemplateGeneration;
 use Mrzkit\LaravelCodeGenerator\Contracts\TemplateHandleContract;
 use Mrzkit\LaravelCodeGenerator\TemplateGenerator;
@@ -14,31 +15,18 @@ class Route implements TemplateHandleContract
     use TemplateUtil;
 
     /**
-     * @var string 控制器名称
+     * @var TableInformationContract
      */
-    private $controlName;
+    private $tableInformationContract;
 
-    /**
-     * @var string 数据表名称
-     */
-    private $tableName;
-
-    public function __construct(string $controlName)
+    public function __construct(TableInformationContract $tableInformationContract)
     {
-        $this->controlName = $controlName;
-    }
-
-    /**
-     * @return string
-     */
-    public function getControlName(): string
-    {
-        return $this->controlName;
+        $this->tableInformationContract = $tableInformationContract;
     }
 
     public function handle(): TemplateGeneration
     {
-        $fullControlName = $this->getControlName();
+        $fullControlName = $this->tableInformationContract->getRenderTableName();
 
         $controlName = static::processControlName($fullControlName);
 

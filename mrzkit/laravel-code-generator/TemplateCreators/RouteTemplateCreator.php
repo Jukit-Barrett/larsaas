@@ -23,12 +23,12 @@ class RouteTemplateCreator implements TemplateCreatorContract
 
     protected function createRoute(): TemplateHandleContract
     {
-        return new Route($this->tableInformationContract->getRenderTableName());
+        return new Route($this->tableInformationContract);
     }
 
     protected function createRouteReplace(string $content): TemplateHandleContract
     {
-        return new RouteReplace($this->tableInformationContract->getRenderTableName(), $content);
+        return new RouteReplace($this->tableInformationContract, $content);
     }
 
     public function handle(): array

@@ -45,10 +45,6 @@ class UnitTest implements TemplateHandleContract
 
         $controlName = static::processControlName($fullControlName);
 
-        $namespacePath = static::processNamespacePath($fullControlName);
-
-        $directoryPath = static::processDirectoryPath($fullControlName);
-
         //********************************************************
 
         $unitTestStoreCodeTemplate = new UnitTestStoreCodeTemplate($this->tableInformationContract);
@@ -75,7 +71,6 @@ class UnitTest implements TemplateHandleContract
 
         // 替换规则
         $replacementRules = [
-            '/{{NAMESPACE_PATH}}/' => $namespacePath,
             '/{{RNT}}/' => $controlName,
             '/{{RNT_ROUTE_PATH}}/' => Str::snake($controlName, '-'),
             '/{{UNIT_TEST_STORE_CODE}}/' => $unitTestStoreCodeTemplate->getCodeString(),
