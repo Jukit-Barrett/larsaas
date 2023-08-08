@@ -15,28 +15,15 @@ class UnitTest implements TemplateHandleContract
 {
     use TemplateUtil;
 
-    /**
-     * @var string
-     */
-    private $controlName;
 
     /**
      * @var TableInformationContract
      */
     private $tableInformationContract;
 
-    public function __construct(string $controlName, TableInformationContract $tableInformationContract)
+    public function __construct(TableInformationContract $tableInformationContract)
     {
-        $this->controlName              = $controlName;
         $this->tableInformationContract = $tableInformationContract;
-    }
-
-    /**
-     * @return string
-     */
-    public function getControlName(): string
-    {
-        return $this->controlName;
     }
 
     /**
@@ -54,7 +41,7 @@ class UnitTest implements TemplateHandleContract
 
     public function handle(): TemplateGeneration
     {
-        $fullControlName = $this->getControlName();
+        $fullControlName = $this->tableInformationContract->getRenderTableName();
 
         $controlName = static::processControlName($fullControlName);
 
@@ -76,7 +63,7 @@ class UnitTest implements TemplateHandleContract
         $forceCover = false;
 
         // 保存目录
-        $saveDirectory = app()->basePath("tests/Feature/{$directoryPath}");
+        $saveDirectory = app()->basePath("tests/Feature");
 
         $saveDirectory = rtrim($saveDirectory, '/');
 

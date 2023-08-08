@@ -87,14 +87,14 @@ class {{RNT}}Service implements ControlServiceContract
 
     public function update(int $id, array $inputParams): bool
     {
-        $param = [];
+        $params = [];
 
         {{SERVICE_UPDATE_TPL}}
 
         $result = false;
 
-        if (!empty($param)) {
-            $result = RepositoryFactory::get{{RNT}}Repository()->update($id, $param);
+        if (!empty($params)) {
+            $result = RepositoryFactory::get{{RNT}}Repository()->update($id, $params);
         }
 
         return $result;

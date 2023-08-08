@@ -10,24 +10,18 @@ use Mrzkit\LaravelCodeGenerator\Templates\UnitTestTemplates\UnitTest;
 class UnitTestTemplateCreator implements TemplateCreatorContract
 {
     /**
-     * @var string
-     */
-    private $controlName;
-
-    /**
      * @var TableInformationContract
      */
     private $tableInformationContract;
 
-    public function __construct(string $controlName, TableInformationContract $tableInformationContract)
+    public function __construct(TableInformationContract $tableInformationContract)
     {
-        $this->controlName              = $controlName;
         $this->tableInformationContract = $tableInformationContract;
     }
 
     protected function createUnitTest(): TemplateHandleContract
     {
-        return new UnitTest($this->controlName, $this->tableInformationContract);
+        return new UnitTest($this->tableInformationContract);
     }
 
     public function handle(): array

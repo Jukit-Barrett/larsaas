@@ -52,12 +52,12 @@ class UnitTestStoreSeedCodeTemplate implements CodeTemplate
                 $max      = $matchResult["max"] ?? 2147483647;
                 $template = '"%s" => %s %s,%s';
                 $type     = "(int)";
-                $val      = "mt_rand(0, {$max})";
+                $val      = "random_int(0, {$max})";
             } else if (!empty($matchResult = $matcher->matchFloat())) {
                 $max      = $matchResult["max"] ?? 2147483647;
                 $template = '"%s" => %s %s,%s';
                 $type     = "(double)";
-                $val      = "mt_rand(0, {$max})";
+                $val      = "random_int(0, {$max})";
             } else if (!empty($matchResult = $matcher->matchString())) {
                 $max      = $matchResult["max"] ?? 100;
                 $template = '"%s" => %s %s,%s';

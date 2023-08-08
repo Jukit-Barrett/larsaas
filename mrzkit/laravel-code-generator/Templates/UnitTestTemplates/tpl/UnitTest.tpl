@@ -3,7 +3,7 @@
 namespace Tests\Feature\{{NAMESPACE_PATH}};
 
 use Tests\Feature\BaseTest;
-use App\Http\Controllers\{{NAMESPACE_PATH}}\{{RNT}}Controls\{{RNT}}Controller;
+use App\Http\{{RNT}}Controller;
 
 class {{RNT}}ControllerTest extends BaseTest
 {

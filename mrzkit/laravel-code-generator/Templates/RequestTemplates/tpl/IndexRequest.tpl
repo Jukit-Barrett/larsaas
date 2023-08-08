@@ -21,12 +21,12 @@ class Index{{RNT}}Request extends FormRequest
      */
     public function rules(): array
     {
-        $orderType = implode(',', ['-id', '+id']);
+        $orderType = implode(",", ["-id", "+id"]);
 
         return [
-            'page'      => 'required|integer|between:0,10000',
-            'perPage'   => 'required|integer|between:0,10000',
-            'orderType' => "string|in:{$orderType}",
+            "page"      => "required|integer|between:0,10000",
+            "perPage"   => "required|integer|between:0,10000",
+            "orderType" => "string|in:{$orderType}",
         ];
     }
 
@@ -37,16 +37,16 @@ class Index{{RNT}}Request extends FormRequest
     public function messages() : array
     {
         return [
-            'page.required' => '页码必填',
-            'page.integer'  => '页码必须是整数',
-            'page.between'  => '页码超出范围',
+            "page.required" => "页码必填",
+            "page.integer"  => "页码必须是整数",
+            "page.between"  => "页码超出范围",
 
-            'perPage.required' => '每页数必填',
-            'perPage.integer'  => '每页数必须是整数',
-            'perPage.between'  => '每页数超出范围',
+            "perPage.required" => "每页数必填",
+            "perPage.integer"  => "每页数必须是整数",
+            "perPage.between"  => "每页数超出范围",
 
-            'orderType.string' => '排序类型格式错误',
-            'orderType.in'     => '排序类型超出范围',
+            "orderType.string" => "排序类型格式错误",
+            "orderType.in"     => "排序类型超出范围",
         ];
     }
 }

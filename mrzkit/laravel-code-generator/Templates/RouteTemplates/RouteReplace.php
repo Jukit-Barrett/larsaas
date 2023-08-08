@@ -49,7 +49,7 @@ class RouteReplace implements TemplateHandleContract
         //*******************************************************
 
         // 模板和写入文件都是自己
-        $routePath = app()->basePath("routes") . '/' . $firstControlNameCamel . '.php';
+        $routePath = app()->basePath("routes") . '/'  . 'api.php';
 
         if (!file_exists($routePath)) {
             throw new \InvalidArgumentException('路由文件不存在:' . $routePath);

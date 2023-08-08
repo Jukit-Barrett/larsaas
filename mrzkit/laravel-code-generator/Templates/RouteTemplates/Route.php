@@ -53,7 +53,7 @@ class Route implements TemplateHandleContract
         // ************************************
 
         // 模板和写入文件都是自己
-        $routePath = app()->basePath("routes") . '/' . $firstControlNameCamel . '.php';
+        $routePath = app()->basePath("routes") . '/'  . 'api.php';
 
         if (!file_exists($routePath)) {
             $tpl = file_get_contents(__DIR__ . '/tpl/RouteEmpty.tpl');
@@ -73,7 +73,7 @@ class Route implements TemplateHandleContract
         }
 
         // 中间件
-        $authMiddleware = $controlName == 'AdminSystem' ? 'auth:adm' : 'auth:api';
+        $authMiddleware = $controlName === 'AdminSystem' ? 'auth:adm' : 'auth:api';
 
         //********************************************************
 
@@ -84,7 +84,7 @@ class Route implements TemplateHandleContract
         $saveDirectory = app()->basePath("routes");
 
         // 保存文件名称
-        $saveFilename = '/tmp/not-need.log';
+        $saveFilename = '/tmp/QWERTYUI1234XONB.log';
 
         // 模板文件
         $sourceTemplateFile = __DIR__ . '/tpl/Route.tpl';

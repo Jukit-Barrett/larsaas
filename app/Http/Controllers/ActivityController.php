@@ -105,21 +105,20 @@ class ActivityController extends Controller
 
         $result = [];
 
-//        // Model
-//        $creator = new ModelTemplateCreator($tableInformation);
-//
-//        $result["ModelTemplateCreator"] = $creator->handle();
-//
-//        // Repository
-//        $creator = new RepositoryTemplateCreator($tableInformation);
-//
-//        $result["RepositoryTemplateCreator"] = $creator->handle();
-//
-//        // Service
-//        $creator = new ServiceTemplateCreator($tableInformation);
-//
-//        $result["ServiceTemplateCreator"] = $creator->handle();
-//
+        // Model
+        $creator = new ModelTemplateCreator($tableInformation);
+
+        $result["ModelTemplateCreator"] = $creator->handle();
+
+        // Repository
+        $creator = new RepositoryTemplateCreator($tableInformation);
+
+        $result["RepositoryTemplateCreator"] = $creator->handle();
+
+        // Service
+        $creator = new ServiceTemplateCreator($tableInformation);
+
+        $result["ServiceTemplateCreator"] = $creator->handle();
 
         // Request
         $creator = new RequestTemplateCreator($tableInformation);
@@ -131,15 +130,13 @@ class ActivityController extends Controller
 
         $result["ControllerTemplateCreator"] = $creator->handle();
 
-        return ApiResponseEntity::success($result);
-
         // Route
-        $creator = new RouteTemplateCreator($inputParams["controls"]);
+        $creator = new RouteTemplateCreator($tableInformation);
 
         $result["RouteTemplateCreator"] = $creator->handle();
 
         // UnitTest
-        $creator = new UnitTestTemplateCreator($inputParams["controls"], $tableInformation);
+        $creator = new UnitTestTemplateCreator($tableInformation);
 
         $result["UnitTestTemplateCreator"] = $creator->handle();
 

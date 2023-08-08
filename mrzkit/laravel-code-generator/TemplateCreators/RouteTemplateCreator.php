@@ -2,6 +2,7 @@
 
 namespace Mrzkit\LaravelCodeGenerator\TemplateCreators;
 
+use Mrzkit\LaravelCodeGenerator\Contracts\TableInformationContract;
 use Mrzkit\LaravelCodeGenerator\Contracts\TemplateCreatorContract;
 use Mrzkit\LaravelCodeGenerator\Contracts\TemplateHandleContract;
 use Mrzkit\LaravelCodeGenerator\Templates\RouteTemplates\Route;
@@ -9,24 +10,25 @@ use Mrzkit\LaravelCodeGenerator\Templates\RouteTemplates\RouteReplace;
 
 class RouteTemplateCreator implements TemplateCreatorContract
 {
-    /**
-     * @var string
-     */
-    private $controlName;
 
-    public function __construct(string $controlName)
+    /**
+     * @var TableInformationContract
+     */
+    private $tableInformationContract;
+
+    public function __construct(TableInformationContract $tableInformationContract)
     {
-        $this->controlName = $controlName;
+        $this->tableInformationContract = $tableInformationContract;
     }
 
     protected function createRoute(): TemplateHandleContract
     {
-        return new Route($this->controlName);
+        return new Route($this->tableInformationContract->getRenderTableName());
     }
 
     protected function createRouteReplace(string $content): TemplateHandleContract
     {
-        return new RouteReplace($this->controlName, $content,);
+        return new RouteReplace($this->tableInformationContract->getRenderTableName(), $content,);
     }
 
     public function handle(): array
