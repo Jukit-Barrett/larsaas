@@ -3,6 +3,7 @@
 namespace App\Support\Factories;
 
 use App\Repositories\ActivityRepository;
+use App\Repositories\SystemHeaderRepository;
 
 class RepositoryFactory
 {
@@ -12,5 +13,10 @@ class RepositoryFactory
         return app(ActivityRepository::class);
     }
 
+    //
+    public static function getSystemHeaderRepository(): SystemHeaderRepository
+    {
+        return app(SystemHeaderRepository::class);
+    }
 
 }

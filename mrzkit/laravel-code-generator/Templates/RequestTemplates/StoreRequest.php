@@ -75,10 +75,10 @@ class StoreRequest implements TemplateHandleContract
         $forceCover = false;
 
         // 保存目录
-        $saveDirectory = app()->basePath("app/Http/Controllers/{$directoryPath}{$controlName}Controls/Requests");
+        $saveDirectory = app()->basePath("app/Http/Requests/{$controlName}");
 
         // 保存文件名称
-        $saveFilename = $saveDirectory . '/' . $controlName . 'StoreRequest.php';
+        $saveFilename = $saveDirectory . '/' . "Store{$controlName}Request.php";
 
         // 模板文件
         $sourceTemplateFile = __DIR__ . '/tpl/StoreRequest.tpl';

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\{{NAMESPACE_PATH}}\{{RNT}}Controls\Requests;
+namespace App\Http\Requests\{{RNT}};
 
-use App\Supports\Cores\FormRequest;
+use Illuminate\Foundation\Http\FormRequest;
 
-class {{RNT}}UpdateRequest extends FormRequest
+class Update{{RNT}}Request extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -17,10 +17,11 @@ class {{RNT}}UpdateRequest extends FormRequest
     }
 
     /**
-     * @desc 验证规则
-     * @return array
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array|string>
      */
-    public static function getRules() : array
+    public function rules(): array
     {
         return [
             {{REQUEST_UPDATE_RULE_TPL}}
@@ -31,7 +32,7 @@ class {{RNT}}UpdateRequest extends FormRequest
      * @desc 规则消息
      * @return array
      */
-    public static function getMessages() : array
+    public function messages() : array
     {
         return [
             {{REQUEST_UPDATE_MESSAGE_TPL}}

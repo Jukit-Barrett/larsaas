@@ -59,8 +59,6 @@ class UpdateRequest implements TemplateHandleContract
 
         $namespacePath = static::processNamespacePath($fullControlName);
 
-        $directoryPath = static::processDirectoryPath($fullControlName);
-
         $requestUpdateRuleCodeTemplate = new RequestUpdateRuleCodeTemplate($this->tableInformationContract);
 
         $requestUpdateMessageCodeTemplate = new RequestUpdateMessageCodeTemplate($this->tableInformationContract);
@@ -71,10 +69,10 @@ class UpdateRequest implements TemplateHandleContract
         $forceCover = false;
 
         // 保存目录
-        $saveDirectory = app()->basePath("app/Http/Controllers/{$directoryPath}{$controlName}Controls/Requests");
+        $saveDirectory = app()->basePath("app/Http/Requests/{$controlName}");
 
         // 保存文件名称
-        $saveFilename = $saveDirectory . '/' . $controlName . 'UpdateRequest.php';
+        $saveFilename = $saveDirectory . '/' . "Update{$controlName}Request.php";
 
         // 模板文件
         $sourceTemplateFile = __DIR__ . '/tpl/UpdateRequest.tpl';

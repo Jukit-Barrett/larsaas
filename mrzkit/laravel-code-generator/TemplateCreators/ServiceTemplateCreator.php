@@ -19,14 +19,15 @@ class ServiceTemplateCreator implements TemplateCreatorContract
      */
     private $tableInformationContract;
 
-    public function __construct(string $controlName, TableInformationContract $tableInformationContract)
+    public function __construct(TableInformationContract $tableInformationContract)
     {
-        $this->controlName              = $controlName;
         $this->tableInformationContract = $tableInformationContract;
     }
 
     protected function createService(): TemplateHandleContract
     {
+        $this->controlName = $this->tableInformationContract->getRenderTableName();
+
         return new Service($this->controlName, $this->tableInformationContract);
     }
 

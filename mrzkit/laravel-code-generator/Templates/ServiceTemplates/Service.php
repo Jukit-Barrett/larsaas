@@ -82,7 +82,7 @@ class Service implements TemplateHandleContract
         $forceCover = false;
 
         // 保存目录
-        $saveDirectory = app()->basePath("app/Services/{$directoryPath}{$controlName}");
+        $saveDirectory = app()->basePath("app/Services");
 
         // 保存文件名称
         $saveFilename = $saveDirectory . '/' . $controlName . 'Service.php';

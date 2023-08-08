@@ -3,7 +3,6 @@
 namespace Mrzkit\LaravelCodeGenerator\Templates\ModelTemplates;
 
 use Mrzkit\LaravelCodeGenerator\CodeTemplates\ModelFillableCodeTemplate;
-use Mrzkit\LaravelCodeGenerator\CodeTemplates\ShardConfigCodeTemplate;
 use Mrzkit\LaravelCodeGenerator\Contracts\TableInformationContract;
 use Mrzkit\LaravelCodeGenerator\Contracts\TemplateGeneration;
 use Mrzkit\LaravelCodeGenerator\Contracts\TemplateHandleContract;
@@ -37,21 +36,19 @@ class Model implements TemplateHandleContract
 
         $modelFillableCodeTemplate = new ModelFillableCodeTemplate($this->tableInformationContract);
 
-        $shardConfigCodeTemplate = new ShardConfigCodeTemplate($this->tableInformationContract);
-
         //********************************************************
 
         // 是否强制覆盖: true=覆盖,false=不覆盖
         $forceCover = false;
 
         // 保存目录
-        $saveDirectory = app()->basePath("app/Repositories/{$tableName}");
+        $saveDirectory = app()->basePath("app/Models");
 
         // 保存文件名称
         $saveFilename = $saveDirectory . '/' . $tableName . '.php';
 
         // 模板文件
-        if ($tableInformationContract->getTableShard()) {
+        if ($tableInformationContract->isSharding()) {
             $sourceTemplateFile = __DIR__ . '/stpl/Model.tpl';
         } else {
             $sourceTemplateFile = __DIR__ . '/tpl/Model.tpl';
@@ -61,8 +58,8 @@ class Model implements TemplateHandleContract
         $replacementRules = [
             '/{{RNT}}/' => $tableName,
             '/{{FILL_ABLE_TPL}}/' => $modelFillableCodeTemplate->getCodeString(),
-            '/{{MAX_SHARD_COUNT}}/' => $tableInformationContract->getMaxShardCount(),
-            '/{{SHARD_CONFIG_TPL}}/' => $shardConfigCodeTemplate->getCodeString(),
+            //'/{{MAX_SHARD_COUNT}}/' => $tableInformationContract->getMaxShardCount(),
+            //'/{{SHARD_CONFIG_TPL}}/' => $shardConfigCodeTemplate->getCodeString(),
         ];
 
         // 替换规则-回调

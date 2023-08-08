@@ -27,6 +27,5 @@ class IndexActivityRequest extends FormRequest
             'perPage' => 'integer|between:2,10000',
             'sort' => 'string|between:0,255',
         ];
-
     }
 }

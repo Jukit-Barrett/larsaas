@@ -101,13 +101,48 @@ class ActivityController extends Controller
 //            "controls" => "SystemHeader",
         ];
 
-        $tableDetail = new TableDetail($inputParams["tableName"], $inputParams["tablePrefix"]);
-
-        dd($tableDetail);
-
-
+        $tableInformation = new TableDetail($inputParams["tableName"], $inputParams["tablePrefix"]);
 
         $result = [];
+
+//        // Model
+//        $creator = new ModelTemplateCreator($tableInformation);
+//
+//        $result["ModelTemplateCreator"] = $creator->handle();
+//
+//        // Repository
+//        $creator = new RepositoryTemplateCreator($tableInformation);
+//
+//        $result["RepositoryTemplateCreator"] = $creator->handle();
+//
+//        // Service
+//        $creator = new ServiceTemplateCreator($tableInformation);
+//
+//        $result["ServiceTemplateCreator"] = $creator->handle();
+//
+
+        // Request
+        $creator = new RequestTemplateCreator($tableInformation);
+
+        $result["RequestTemplateCreator"] = $creator->handle();
+
+        // Controller
+        $creator = new ControllerTemplateCreator($tableInformation);
+
+        $result["ControllerTemplateCreator"] = $creator->handle();
+
+        return ApiResponseEntity::success($result);
+
+        // Route
+        $creator = new RouteTemplateCreator($inputParams["controls"]);
+
+        $result["RouteTemplateCreator"] = $creator->handle();
+
+        // UnitTest
+        $creator = new UnitTestTemplateCreator($inputParams["controls"], $tableInformation);
+
+        $result["UnitTestTemplateCreator"] = $creator->handle();
+
 
         return ApiResponseEntity::success($result);
 

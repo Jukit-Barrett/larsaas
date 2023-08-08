@@ -2,6 +2,7 @@
 
 namespace Mrzkit\LaravelCodeGenerator\TemplateCreators;
 
+use Mrzkit\LaravelCodeGenerator\Contracts\TableInformationContract;
 use Mrzkit\LaravelCodeGenerator\Contracts\TemplateCreatorContract;
 use Mrzkit\LaravelCodeGenerator\Contracts\TemplateHandleContract;
 use Mrzkit\LaravelCodeGenerator\Templates\ControllerTemplates\Controller;
@@ -9,13 +10,13 @@ use Mrzkit\LaravelCodeGenerator\Templates\ControllerTemplates\Controller;
 class ControllerTemplateCreator implements TemplateCreatorContract
 {
     /**
-     * @var string
+     * @var TableInformationContract
      */
-    private $controlName;
+    private $tableInformationContract;
 
-    public function __construct(string $controlName)
+    public function __construct(TableInformationContract $tableInformationContract)
     {
-        $this->controlName = $controlName;
+        $this->tableInformationContract = $tableInformationContract;
     }
 
     /**
@@ -24,7 +25,7 @@ class ControllerTemplateCreator implements TemplateCreatorContract
      */
     protected function createController(): TemplateHandleContract
     {
-        return new Controller($this->controlName);
+        return new Controller($this->tableInformationContract->getRenderTableName());
     }
 
     public function handle(): array

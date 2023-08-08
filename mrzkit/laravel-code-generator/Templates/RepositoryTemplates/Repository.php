@@ -49,16 +49,16 @@ class Repository implements TemplateHandleContract
         $forceCover = false;
 
         // 保存目录
-        $saveDirectory = app()->basePath("app/Repositories/{$tableName}");
+        $saveDirectory = app()->basePath("app/Repositories");
 
         // 保存文件名称
         $saveFilename = $saveDirectory . '/' . $tableName . 'Repository.php';
 
         // 模板文件
-        if ($this->getTableInformationContract()->getTableShard()) {
+        if ($this->getTableInformationContract()->isSharding()) {
             $sourceTemplateFile = __DIR__ . '/stpl/ModelRepository.tpl';
         } else {
-            $sourceTemplateFile = __DIR__ . '/tpl/ModelRepository.tpl';
+            $sourceTemplateFile = __DIR__ . '/tpl/Repository.tpl';
         }
 
         // 替换规则
