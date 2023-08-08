@@ -5,12 +5,11 @@ namespace Mrzkit\LaravelCodeGenerator\TemplateCreators;
 use Mrzkit\LaravelCodeGenerator\Contracts\TableInformationContract;
 use Mrzkit\LaravelCodeGenerator\Contracts\TemplateCreatorContract;
 use Mrzkit\LaravelCodeGenerator\Contracts\TemplateHandleContract;
-use Mrzkit\LaravelCodeGenerator\Templates\RouteTemplates\Route;
-use Mrzkit\LaravelCodeGenerator\Templates\RouteTemplates\RouteReplace;
+use Mrzkit\LaravelCodeGenerator\Templates\RepositoryFactoryTemplates\RepositoryFactoryReplace;
+use Mrzkit\LaravelCodeGenerator\Templates\ServiceFactoryTemplates\RepositoryFactoryEmpty;
 
-class RouteTemplateCreator implements TemplateCreatorContract
+class FactoryFactoryTemplateCreator implements TemplateCreatorContract
 {
-
     /**
      * @var TableInformationContract
      */
@@ -21,25 +20,30 @@ class RouteTemplateCreator implements TemplateCreatorContract
         $this->tableInformationContract = $tableInformationContract;
     }
 
-    protected function createRoute(): TemplateHandleContract
+    protected function createRepositoryFactoryEmpty(): TemplateHandleContract
     {
-        return new Route($this->tableInformationContract->getRenderTableName());
+        return new RepositoryFactoryEmpty($this->tableInformationContract);
     }
 
-    protected function createRouteReplace(string $content): TemplateHandleContract
+    protected function createRepositoryFactoryReplace(string $content): TemplateHandleContract
     {
-        return new RouteReplace($this->tableInformationContract->getRenderTableName(), $content);
+        return new RepositoryFactoryReplace($this->tableInformationContract, $content);
     }
 
     public function handle(): array
     {
+
+
         $result = [];
 
-        $templateHandler = $this->createRoute()->handle();
+        // 处理
+        $templateHandler = $this->createRepositoryFactoryEmpty()->handle();
 
+        // 获取替换结果
         $replaceString = $templateHandler->getReplaceResult();
 
-        $templateHandler = $this->createRouteReplace($replaceString)->handle();
+        // 添加替换结果再处理
+        $templateHandler = $this->createRepositoryFactoryReplace($replaceString)->handle();
 
         $result[] = [
             'result' => $templateHandler->getWriteResult(),

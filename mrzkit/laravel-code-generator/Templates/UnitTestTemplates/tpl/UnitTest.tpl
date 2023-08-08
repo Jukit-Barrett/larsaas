@@ -1,9 +1,9 @@
 <?php
 
-namespace Tests\Feature\{{NAMESPACE_PATH}};
+namespace Tests\Feature;
 
 use Tests\Feature\BaseTest;
-use App\Http\{{RNT}}Controller;
+use App\Http\Controllers\{{RNT}}Controller;
 
 class {{RNT}}ControllerTest extends BaseTest
 {

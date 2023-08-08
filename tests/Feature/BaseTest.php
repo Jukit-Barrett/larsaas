@@ -7,13 +7,13 @@ use Tests\TestCase;
 
 class BaseTest extends TestCase
 {
-    public function getToken() : string
+    public function getToken(): string
     {
         $data = [
-            "captcha"  => (string) "captcha",
-            "key"      => (string) "key",
-            "mobile"   => (string) env("UNIT_TEST_USERNAME", ""),
-            "password" => (string) env("UNIT_TEST_PASSWORD", ""),
+            "captcha" => (string)"captcha",
+            "key" => (string)"key",
+            "mobile" => (string)env("UNIT_TEST_USERNAME", ""),
+            "password" => (string)env("UNIT_TEST_PASSWORD", ""),
         ];
 
         if (empty($data["mobile"]) || empty($data["password"])) {
@@ -22,7 +22,7 @@ class BaseTest extends TestCase
 
         $cacheKey = "UnitTest:" . $data["mobile"];
 
-        $token = Cache::remember($cacheKey, 46400, function () use ($data){
+        $token = Cache::remember($cacheKey, 46400, function () use ($data) {
             //
             $uri = "/us/auth/login-mobile";
 
@@ -30,15 +30,13 @@ class BaseTest extends TestCase
 
             $response->assertStatus(200);
 
-            $token = $response->json("data.accessToken");
-
-            return $token;
+            return $response->json("data.accessToken");
         });
 
         return $token;
     }
 
-    public function getFaker() : \Faker\Generator
+    public function getFaker(): \Faker\Generator
     {
         return app(\Faker\Generator::class);
     }

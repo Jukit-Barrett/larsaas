@@ -29,6 +29,26 @@ Route::group([], function (Router $router) {
 });
 
 
+Route::group(
+    [
+        'middleware' => 'auth:api',
+    ],
+    function (Router $router){
+        // SystemHeader ******** ******** ******** ********  ******** ******** ******** ********
+        $router->apiResource('system-header', \App\Http\Controllers\SystemHeaderController::class)->names(
+            [
+                'index'   => 'SystemHeader列表',
+                'show'    => 'SystemHeader信息',
+                'store'   => 'SystemHeader添加',
+                'update'  => 'SystemHeader更新',
+                'destroy' => 'SystemHeader删除',
+            ]
+        );
+
+        $router->post('system-header-ext/multi', [\App\Http\Controllers\SystemHeaderController::class, 'many'])->name('SystemHeader批量获取');
+});
+
 //{{HERE}}
+
 
 

@@ -58,8 +58,6 @@ class Service implements TemplateHandleContract
 
         $namespacePath = static::processNamespacePath($fullControlName);
 
-        $directoryPath = static::processDirectoryPath($fullControlName);
-
         //********************************************************
 
         $serviceUpdateCodeTemplate = new ServiceUpdateCodeTemplate($this->tableInformationContract);

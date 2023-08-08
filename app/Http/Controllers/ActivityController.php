@@ -13,6 +13,7 @@ use Mrzkit\LaravelCodeGenerator\TemplateCreators\ModelTemplateCreator;
 use Mrzkit\LaravelCodeGenerator\TemplateCreators\RepositoryTemplateCreator;
 use Mrzkit\LaravelCodeGenerator\TemplateCreators\RequestTemplateCreator;
 use Mrzkit\LaravelCodeGenerator\TemplateCreators\RouteTemplateCreator;
+use Mrzkit\LaravelCodeGenerator\TemplateCreators\ServiceFactoryTemplateCreator;
 use Mrzkit\LaravelCodeGenerator\TemplateCreators\ServiceTemplateCreator;
 use Mrzkit\LaravelCodeGenerator\TemplateCreators\UnitTestTemplateCreator;
 use Mrzkit\LaravelCodeGenerator\TemplateHandler;
@@ -139,6 +140,11 @@ class ActivityController extends Controller
         $creator = new UnitTestTemplateCreator($tableInformation);
 
         $result["UnitTestTemplateCreator"] = $creator->handle();
+
+        // Factory
+        $creator = new ServiceFactoryTemplateCreator($tableInformation);
+
+        $result["ServiceFactoryTemplateCreator"] = $creator->handle();
 
 
         return ApiResponseEntity::success($result);
