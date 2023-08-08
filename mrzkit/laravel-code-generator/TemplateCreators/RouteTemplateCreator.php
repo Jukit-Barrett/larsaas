@@ -4,7 +4,6 @@ namespace Mrzkit\LaravelCodeGenerator\TemplateCreators;
 
 use Mrzkit\LaravelCodeGenerator\Contracts\TemplateCreatorContract;
 use Mrzkit\LaravelCodeGenerator\Contracts\TemplateHandleContract;
-use Mrzkit\LaravelCodeGenerator\Contracts\TemplateHandlerContract;
 use Mrzkit\LaravelCodeGenerator\Templates\RouteTemplates\Route;
 use Mrzkit\LaravelCodeGenerator\Templates\RouteTemplates\RouteReplace;
 
@@ -15,40 +14,34 @@ class RouteTemplateCreator implements TemplateCreatorContract
      */
     private $controlName;
 
-    /**
-     * @var TemplateHandlerContract
-     */
-    private $templateHandlerContract;
-
-    public function __construct(string $controlName, TemplateHandlerContract $templateHandlerContract)
+    public function __construct(string $controlName)
     {
-        $this->controlName             = $controlName;
-        $this->templateHandlerContract = $templateHandlerContract;
+        $this->controlName = $controlName;
     }
 
-    protected function createRoute() : TemplateHandleContract
+    protected function createRoute(): TemplateHandleContract
     {
         return new Route($this->controlName);
     }
 
-    protected function createRouteReplace(string $content) : TemplateHandleContract
+    protected function createRouteReplace(string $content): TemplateHandleContract
     {
         return new RouteReplace($this->controlName, $content,);
     }
 
-    public function handle() : array
+    public function handle(): array
     {
         $result = [];
 
-        $templateHandler = $this->templateHandlerContract->setTemplateContract($this->createRoute()->handle());
+        $templateHandler = $this->createRoute()->handle();
 
         $replaceString = $templateHandler->getReplaceResult();
 
-        $templateHandler = $this->templateHandlerContract->setTemplateContract($this->createRouteReplace($replaceString)->handle());
+        $templateHandler = $this->createRouteReplace($replaceString)->handle();
 
         $result[] = [
-            'result'       => $templateHandler->getWriteResult(),
-            'saveFilename' => $templateHandler->getTemplateContract()->getSaveFilename(),
+            'result' => $templateHandler->getWriteResult(),
+            'saveFilename' => $templateHandler->getSaveFilename(),
         ];
 
         return $result;

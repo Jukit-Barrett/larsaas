@@ -5,9 +5,9 @@ namespace Mrzkit\LaravelCodeGenerator\Templates\ModelTemplates;
 use Mrzkit\LaravelCodeGenerator\CodeTemplates\ModelFillableCodeTemplate;
 use Mrzkit\LaravelCodeGenerator\CodeTemplates\ShardConfigCodeTemplate;
 use Mrzkit\LaravelCodeGenerator\Contracts\TableInformationContract;
-use Mrzkit\LaravelCodeGenerator\Contracts\TemplateContract;
+use Mrzkit\LaravelCodeGenerator\Contracts\TemplateGeneration;
 use Mrzkit\LaravelCodeGenerator\Contracts\TemplateHandleContract;
-use Mrzkit\LaravelCodeGenerator\TemplateObject;
+use Mrzkit\LaravelCodeGenerator\TemplateGenerator;
 
 class Model implements TemplateHandleContract
 {
@@ -29,7 +29,7 @@ class Model implements TemplateHandleContract
         return $this->tableInformationContract;
     }
 
-    public function handle(): TemplateContract
+    public function handle(): TemplateGeneration
     {
         $tableInformationContract = $this->getTableInformationContract();
 
@@ -70,16 +70,16 @@ class Model implements TemplateHandleContract
 
         ];
 
-        $templateObject = new TemplateObject();
+        $templateGenerator = new TemplateGenerator();
 
-        $templateObject->setForceCover($forceCover)
+        $templateGenerator->setForceCover($forceCover)
             ->setSaveDirectory($saveDirectory)
             ->setSaveFilename($saveFilename)
             ->setSourceTemplateFile($sourceTemplateFile)
             ->setReplacementRules($replacementRules)
             ->setReplacementRuleCallbacks($replacementRuleCallbacks);
 
-        return $templateObject;
+        return $templateGenerator;
     }
 
 }

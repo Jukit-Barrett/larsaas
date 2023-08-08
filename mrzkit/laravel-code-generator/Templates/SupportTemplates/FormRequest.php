@@ -2,9 +2,9 @@
 
 namespace Mrzkit\LaravelCodeGenerator\Templates\SupportTemplates;
 
-use Mrzkit\LaravelCodeGenerator\Contracts\TemplateContract;
+use Mrzkit\LaravelCodeGenerator\Contracts\TemplateGeneration;
 use Mrzkit\LaravelCodeGenerator\Contracts\TemplateHandleContract;
-use Mrzkit\LaravelCodeGenerator\TemplateObject;
+use Mrzkit\LaravelCodeGenerator\TemplateGenerator;
 
 class FormRequest implements TemplateHandleContract
 {
@@ -21,12 +21,12 @@ class FormRequest implements TemplateHandleContract
     /**
      * @return string
      */
-    public function getName() : string
+    public function getName(): string
     {
         return $this->name;
     }
 
-    public function handle() : TemplateContract
+    public function handle(): TemplateGeneration
     {
         $name = $this->getName();
 
@@ -51,15 +51,15 @@ class FormRequest implements TemplateHandleContract
 
         ];
 
-        $templateObject = new TemplateObject();
+        $templateGenerator = new TemplateGenerator();
 
-        $templateObject->setForceCover($forceCover)
+        $templateGenerator->setForceCover($forceCover)
             ->setSaveDirectory($saveDirectory)
             ->setSaveFilename($saveFilename)
             ->setSourceTemplateFile($sourceTemplateFile)
             ->setReplacementRules($replacementRules)
             ->setReplacementRuleCallbacks($replacementRuleCallbacks);
 
-        return $templateObject;
+        return $templateGenerator;
     }
 }

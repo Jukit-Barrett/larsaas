@@ -5,9 +5,9 @@ namespace Mrzkit\LaravelCodeGenerator\Templates\ServiceTemplates;
 use Mrzkit\LaravelCodeGenerator\CodeTemplates\ServiceStoreCodeTemplate;
 use Mrzkit\LaravelCodeGenerator\CodeTemplates\ServiceUpdateCodeTemplate;
 use Mrzkit\LaravelCodeGenerator\Contracts\TableInformationContract;
-use Mrzkit\LaravelCodeGenerator\Contracts\TemplateContract;
+use Mrzkit\LaravelCodeGenerator\Contracts\TemplateGeneration;
 use Mrzkit\LaravelCodeGenerator\Contracts\TemplateHandleContract;
-use Mrzkit\LaravelCodeGenerator\TemplateObject;
+use Mrzkit\LaravelCodeGenerator\TemplateGenerator;
 use Mrzkit\LaravelCodeGenerator\TemplateUtil;
 
 class Service implements TemplateHandleContract
@@ -50,7 +50,7 @@ class Service implements TemplateHandleContract
         ];
     }
 
-    public function handle(): TemplateContract
+    public function handle(): TemplateGeneration
     {
         $fullControlName = $this->getControlName();
 
@@ -100,22 +100,20 @@ class Service implements TemplateHandleContract
             '/{{REPOSITORY_NAME}}/' => $repositoryName,
         ];
 
-        dd($replacementRules);
-
         // 替换规则-回调
         $replacementRuleCallbacks = [
 
         ];
 
-        $templateObject = new TemplateObject();
+        $templateGenerator = new TemplateGenerator();
 
-        $templateObject->setForceCover($forceCover)
+        $templateGenerator->setForceCover($forceCover)
             ->setSaveDirectory($saveDirectory)
             ->setSaveFilename($saveFilename)
             ->setSourceTemplateFile($sourceTemplateFile)
             ->setReplacementRules($replacementRules)
             ->setReplacementRuleCallbacks($replacementRuleCallbacks);
 
-        return $templateObject;
+        return $templateGenerator;
     }
 }

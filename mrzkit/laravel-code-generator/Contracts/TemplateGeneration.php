@@ -2,7 +2,7 @@
 
 namespace Mrzkit\LaravelCodeGenerator\Contracts;
 
-interface TemplateContract
+interface TemplateGeneration
 {
     /**
      * @desc 强制覆盖
@@ -39,4 +39,17 @@ interface TemplateContract
      * @return string[]
      */
     public function getReplacementRuleCallbacks(): array;
+
+
+    /**
+     * @desc 获取写入结果
+     * @return bool
+     */
+    public function getWriteResult(): bool;
+
+    /**
+     * @desc 获取替换结果
+     * @return string
+     */
+    public function getReplaceResult(): string;
 }

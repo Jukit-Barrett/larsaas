@@ -3,9 +3,9 @@
 namespace Mrzkit\LaravelCodeGenerator\Templates\RouteTemplates;
 
 use Illuminate\Support\Str;
-use Mrzkit\LaravelCodeGenerator\Contracts\TemplateContract;
+use Mrzkit\LaravelCodeGenerator\Contracts\TemplateGeneration;
 use Mrzkit\LaravelCodeGenerator\Contracts\TemplateHandleContract;
-use Mrzkit\LaravelCodeGenerator\TemplateObject;
+use Mrzkit\LaravelCodeGenerator\TemplateGenerator;
 use Mrzkit\LaravelCodeGenerator\TemplateUtil;
 
 class RouteReplace implements TemplateHandleContract
@@ -31,24 +31,18 @@ class RouteReplace implements TemplateHandleContract
     /**
      * @return string
      */
-    public function getControlName() : string
+    public function getControlName(): string
     {
         return $this->controlName;
     }
 
-    public function handle() : TemplateContract
+    public function handle(): TemplateGeneration
     {
         $fullControlName = $this->getControlName();
 
         $firstControlName = static::processFirstControlName($fullControlName);
 
         $controlName = static::processControlName($fullControlName);
-
-        $namespacePath = static::processNamespacePath($fullControlName);
-
-        $directoryPath = static::processDirectoryPath($fullControlName);
-
-        $controlPathName = Str::snake($controlName, '-');
 
         $firstControlNameCamel = Str::camel($firstControlName);
 
@@ -57,7 +51,7 @@ class RouteReplace implements TemplateHandleContract
         // 模板和写入文件都是自己
         $routePath = app()->basePath("routes") . '/' . $firstControlNameCamel . '.php';
 
-        if ( !file_exists($routePath)) {
+        if (!file_exists($routePath)) {
             throw new \InvalidArgumentException('路由文件不存在:' . $routePath);
         }
 
@@ -94,15 +88,15 @@ class RouteReplace implements TemplateHandleContract
 
         ];
 
-        $templateObject = new TemplateObject();
+        $templateGenerator = new TemplateGenerator();
 
-        $templateObject->setForceCover($forceCover)
+        $templateGenerator->setForceCover($forceCover)
             ->setSaveDirectory($saveDirectory)
             ->setSaveFilename($saveFilename)
             ->setSourceTemplateFile($sourceTemplateFile)
             ->setReplacementRules($replacementRules)
             ->setReplacementRuleCallbacks($replacementRuleCallbacks);
 
-        return $templateObject;
+        return $templateGenerator;
     }
 }

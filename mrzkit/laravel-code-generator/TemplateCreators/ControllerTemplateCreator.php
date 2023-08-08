@@ -4,7 +4,6 @@ namespace Mrzkit\LaravelCodeGenerator\TemplateCreators;
 
 use Mrzkit\LaravelCodeGenerator\Contracts\TemplateCreatorContract;
 use Mrzkit\LaravelCodeGenerator\Contracts\TemplateHandleContract;
-use Mrzkit\LaravelCodeGenerator\Contracts\TemplateHandlerContract;
 use Mrzkit\LaravelCodeGenerator\Templates\ControllerTemplates\Controller;
 
 class ControllerTemplateCreator implements TemplateCreatorContract
@@ -14,15 +13,9 @@ class ControllerTemplateCreator implements TemplateCreatorContract
      */
     private $controlName;
 
-    /**
-     * @var TemplateHandlerContract
-     */
-    private $templateHandlerContract;
-
-    public function __construct(string $controlName, TemplateHandlerContract $templateHandlerContract)
+    public function __construct(string $controlName)
     {
-        $this->controlName             = $controlName;
-        $this->templateHandlerContract = $templateHandlerContract;
+        $this->controlName = $controlName;
     }
 
     /**
@@ -38,11 +31,11 @@ class ControllerTemplateCreator implements TemplateCreatorContract
     {
         $result = [];
 
-        $templateHandler = $this->templateHandlerContract->setTemplateContract($this->createController()->handle());
+        $templateHandler = $this->createController()->handle();
 
         $result[] = [
             'result' => $templateHandler->getWriteResult(),
-            'saveFilename' => $templateHandler->getTemplateContract()->getSaveFilename(),
+            'saveFilename' => $templateHandler->getSaveFilename(),
         ];
 
         return $result;

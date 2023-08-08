@@ -5,7 +5,6 @@ namespace Mrzkit\LaravelCodeGenerator\TemplateCreators;
 use Mrzkit\LaravelCodeGenerator\Contracts\TableInformationContract;
 use Mrzkit\LaravelCodeGenerator\Contracts\TemplateCreatorContract;
 use Mrzkit\LaravelCodeGenerator\Contracts\TemplateHandleContract;
-use Mrzkit\LaravelCodeGenerator\Contracts\TemplateHandlerContract;
 use Mrzkit\LaravelCodeGenerator\Templates\ServiceTemplates\Service;
 
 class ServiceTemplateCreator implements TemplateCreatorContract
@@ -16,19 +15,13 @@ class ServiceTemplateCreator implements TemplateCreatorContract
     private $controlName;
 
     /**
-     * @var TemplateHandlerContract
-     */
-    private $templateHandlerContract;
-
-    /**
      * @var TableInformationContract
      */
     private $tableInformationContract;
 
-    public function __construct(string $controlName, TemplateHandlerContract $templateHandlerContract, TableInformationContract $tableInformationContract)
+    public function __construct(string $controlName, TableInformationContract $tableInformationContract)
     {
         $this->controlName              = $controlName;
-        $this->templateHandlerContract  = $templateHandlerContract;
         $this->tableInformationContract = $tableInformationContract;
     }
 
@@ -41,11 +34,11 @@ class ServiceTemplateCreator implements TemplateCreatorContract
     {
         $result = [];
 
-        $templateHandler = $this->templateHandlerContract->setTemplateContract($this->createService()->handle());
+        $templateHandler = $this->createService()->handle();
 
         $result[] = [
             'result' => $templateHandler->getWriteResult(),
-            'saveFilename' => $templateHandler->getTemplateContract()->getSaveFilename(),
+            'saveFilename' => $templateHandler->getSaveFilename(),
         ];
 
         return $result;

@@ -4,9 +4,9 @@ namespace Mrzkit\LaravelCodeGenerator\Templates\RouteTemplates;
 
 use Illuminate\Support\Str;
 use InvalidArgumentException;
-use Mrzkit\LaravelCodeGenerator\Contracts\TemplateContract;
+use Mrzkit\LaravelCodeGenerator\Contracts\TemplateGeneration;
 use Mrzkit\LaravelCodeGenerator\Contracts\TemplateHandleContract;
-use Mrzkit\LaravelCodeGenerator\TemplateObject;
+use Mrzkit\LaravelCodeGenerator\TemplateGenerator;
 use Mrzkit\LaravelCodeGenerator\TemplateUtil;
 
 class Route implements TemplateHandleContract
@@ -31,12 +31,12 @@ class Route implements TemplateHandleContract
     /**
      * @return string
      */
-    public function getControlName() : string
+    public function getControlName(): string
     {
         return $this->controlName;
     }
 
-    public function handle() : TemplateContract
+    public function handle(): TemplateGeneration
     {
         $fullControlName = $this->getControlName();
 
@@ -45,8 +45,6 @@ class Route implements TemplateHandleContract
         $controlName = static::processControlName($fullControlName);
 
         $namespacePath = static::processNamespacePath($fullControlName);
-
-        $directoryPath = static::processDirectoryPath($fullControlName);
 
         $controlPathName = Str::snake($controlName, '-');
 
@@ -57,7 +55,7 @@ class Route implements TemplateHandleContract
         // 模板和写入文件都是自己
         $routePath = app()->basePath("routes") . '/' . $firstControlNameCamel . '.php';
 
-        if ( !file_exists($routePath)) {
+        if (!file_exists($routePath)) {
             $tpl = file_get_contents(__DIR__ . '/tpl/RouteEmpty.tpl');
 
             if (file_put_contents($routePath, $tpl) === false) {
@@ -93,9 +91,9 @@ class Route implements TemplateHandleContract
 
         // 替换规则
         $replacementRules = [
-            '/{{AUTH_MIDDLEWARE}}/'  => $authMiddleware,
-            '/{{NAMESPACE_PATH}}/'   => $namespacePath,
-            '/{{RNT}}/'              => $controlName,
+            '/{{AUTH_MIDDLEWARE}}/' => $authMiddleware,
+            '/{{NAMESPACE_PATH}}/' => $namespacePath,
+            '/{{RNT}}/' => $controlName,
             '/{{LOWER_ROUTE_NAME}}/' => $controlPathName,
         ];
 
@@ -104,15 +102,15 @@ class Route implements TemplateHandleContract
 
         ];
 
-        $templateObject = new TemplateObject();
+        $templateGenerator = new TemplateGenerator();
 
-        $templateObject->setForceCover($forceCover)
+        $templateGenerator->setForceCover($forceCover)
             ->setSaveDirectory($saveDirectory)
             ->setSaveFilename($saveFilename)
             ->setSourceTemplateFile($sourceTemplateFile)
             ->setReplacementRules($replacementRules)
             ->setReplacementRuleCallbacks($replacementRuleCallbacks);
 
-        return $templateObject;
+        return $templateGenerator;
     }
 }

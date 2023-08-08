@@ -2,9 +2,9 @@
 
 namespace Mrzkit\LaravelCodeGenerator\Templates\ControllerTemplates;
 
-use Mrzkit\LaravelCodeGenerator\Contracts\TemplateContract;
+use Mrzkit\LaravelCodeGenerator\Contracts\TemplateGeneration;
 use Mrzkit\LaravelCodeGenerator\Contracts\TemplateHandleContract;
-use Mrzkit\LaravelCodeGenerator\TemplateObject;
+use Mrzkit\LaravelCodeGenerator\TemplateGenerator;
 use Mrzkit\LaravelCodeGenerator\TemplateUtil;
 
 class Controller implements TemplateHandleContract
@@ -29,7 +29,7 @@ class Controller implements TemplateHandleContract
         return $this->controlName;
     }
 
-    public function handle(): TemplateContract
+    public function handle(): TemplateGeneration
     {
         $fullControlName = $this->getControlName();
 
@@ -86,16 +86,16 @@ class Controller implements TemplateHandleContract
             },
         ];
 
-        $templateObject = new TemplateObject();
+        $templateGenerator = new TemplateGenerator();
 
-        $templateObject->setForceCover($forceCover)
+        $templateGenerator->setForceCover($forceCover)
             ->setSaveDirectory($saveDirectory)
             ->setSaveFilename($saveFilename)
             ->setSourceTemplateFile($sourceTemplateFile)
             ->setReplacementRules($replacementRules)
             ->setReplacementRuleCallbacks($replacementRuleCallbacks);
 
-        return $templateObject;
+        return $templateGenerator;
     }
 
 }

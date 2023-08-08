@@ -5,9 +5,9 @@ namespace Mrzkit\LaravelCodeGenerator\Templates\RequestTemplates;
 use Mrzkit\LaravelCodeGenerator\CodeTemplates\RequestUpdateMessageCodeTemplate;
 use Mrzkit\LaravelCodeGenerator\CodeTemplates\RequestUpdateRuleCodeTemplate;
 use Mrzkit\LaravelCodeGenerator\Contracts\TableInformationContract;
-use Mrzkit\LaravelCodeGenerator\Contracts\TemplateContract;
+use Mrzkit\LaravelCodeGenerator\Contracts\TemplateGeneration;
 use Mrzkit\LaravelCodeGenerator\Contracts\TemplateHandleContract;
-use Mrzkit\LaravelCodeGenerator\TemplateObject;
+use Mrzkit\LaravelCodeGenerator\TemplateGenerator;
 use Mrzkit\LaravelCodeGenerator\TemplateUtil;
 
 class UpdateRequest implements TemplateHandleContract
@@ -51,7 +51,7 @@ class UpdateRequest implements TemplateHandleContract
         ];
     }
 
-    public function handle(): TemplateContract
+    public function handle(): TemplateGeneration
     {
         $fullControlName = $this->getControlName();
 
@@ -92,15 +92,15 @@ class UpdateRequest implements TemplateHandleContract
 
         ];
 
-        $templateObject = new TemplateObject();
+        $templateGenerator = new TemplateGenerator();
 
-        $templateObject->setForceCover($forceCover)
+        $templateGenerator->setForceCover($forceCover)
             ->setSaveDirectory($saveDirectory)
             ->setSaveFilename($saveFilename)
             ->setSourceTemplateFile($sourceTemplateFile)
             ->setReplacementRules($replacementRules)
             ->setReplacementRuleCallbacks($replacementRuleCallbacks);
 
-        return $templateObject;
+        return $templateGenerator;
     }
 }

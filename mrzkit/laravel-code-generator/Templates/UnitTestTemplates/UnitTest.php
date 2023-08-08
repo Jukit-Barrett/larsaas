@@ -6,9 +6,9 @@ use Illuminate\Support\Str;
 use Mrzkit\LaravelCodeGenerator\CodeTemplates\UnitTestStoreCodeTemplate;
 use Mrzkit\LaravelCodeGenerator\CodeTemplates\UnitTestStoreSeedCodeTemplate;
 use Mrzkit\LaravelCodeGenerator\Contracts\TableInformationContract;
-use Mrzkit\LaravelCodeGenerator\Contracts\TemplateContract;
+use Mrzkit\LaravelCodeGenerator\Contracts\TemplateGeneration;
 use Mrzkit\LaravelCodeGenerator\Contracts\TemplateHandleContract;
-use Mrzkit\LaravelCodeGenerator\TemplateObject;
+use Mrzkit\LaravelCodeGenerator\TemplateGenerator;
 use Mrzkit\LaravelCodeGenerator\TemplateUtil;
 
 class UnitTest implements TemplateHandleContract
@@ -52,7 +52,7 @@ class UnitTest implements TemplateHandleContract
         ];
     }
 
-    public function handle(): TemplateContract
+    public function handle(): TemplateGeneration
     {
         $fullControlName = $this->getControlName();
 
@@ -125,16 +125,16 @@ class UnitTest implements TemplateHandleContract
             },
         ];
 
-        $templateObject = new TemplateObject();
+        $templateGenerator = new TemplateGenerator();
 
-        $templateObject->setForceCover($forceCover)
+        $templateGenerator->setForceCover($forceCover)
             ->setSaveDirectory($saveDirectory)
             ->setSaveFilename($saveFilename)
             ->setSourceTemplateFile($sourceTemplateFile)
             ->setReplacementRules($replacementRules)
             ->setReplacementRuleCallbacks($replacementRuleCallbacks);
 
-        return $templateObject;
+        return $templateGenerator;
     }
 
 }
