@@ -3,16 +3,17 @@
 namespace Mrzkit\LaravelCodeGenerator\Templates\UnitTestTemplates;
 
 use Illuminate\Support\Str;
-use Mrzkit\LaravelCodeGenerator\CodeTemplate;
+use Mrzkit\LaravelCodeGenerator\CodeTemplates\UnitTestStoreCodeTemplate;
+use Mrzkit\LaravelCodeGenerator\CodeTemplates\UnitTestStoreSeedCodeTemplate;
 use Mrzkit\LaravelCodeGenerator\Contracts\TableInformationContract;
 use Mrzkit\LaravelCodeGenerator\Contracts\TemplateContract;
 use Mrzkit\LaravelCodeGenerator\Contracts\TemplateHandleContract;
 use Mrzkit\LaravelCodeGenerator\TemplateObject;
-use Mrzkit\LaravelCodeGenerator\TemplateTool;
+use Mrzkit\LaravelCodeGenerator\TemplateUtil;
 
 class UnitTest implements TemplateHandleContract
 {
-    use TemplateTool;
+    use TemplateUtil;
 
     /**
      * @var string
@@ -24,44 +25,25 @@ class UnitTest implements TemplateHandleContract
      */
     private $tableInformationContract;
 
-    private $codeTemplate;
-
     public function __construct(string $controlName, TableInformationContract $tableInformationContract)
     {
         $this->controlName              = $controlName;
         $this->tableInformationContract = $tableInformationContract;
-        $this->codeTemplate             = new CodeTemplate($tableInformationContract);
     }
 
     /**
      * @return string
      */
-    public function getControlName() : string
+    public function getControlName(): string
     {
         return $this->controlName;
-    }
-
-    /**
-     * @return TableInformationContract
-     */
-    public function getTableInformationContract() : TableInformationContract
-    {
-        return $this->tableInformationContract;
-    }
-
-    /**
-     * @return CodeTemplate
-     */
-    public function getCodeTemplate() : CodeTemplate
-    {
-        return $this->codeTemplate;
     }
 
     /**
      * @desc
      * @return string[]
      */
-    public function getIgnoreFields() : array
+    public function getIgnoreFields(): array
     {
         return [
             "id", "createdBy", "createdAt", "updatedBy", "updatedAt", "deletedBy", "deletedAt",
@@ -70,7 +52,7 @@ class UnitTest implements TemplateHandleContract
         ];
     }
 
-    public function handle() : TemplateContract
+    public function handle(): TemplateContract
     {
         $fullControlName = $this->getControlName();
 
@@ -82,8 +64,11 @@ class UnitTest implements TemplateHandleContract
 
         //********************************************************
 
-        $unitTestStoreCodeTemplate = $this->getCodeTemplate()->getUnitTestStoreTpl($this->getIgnoreFields());
-        $unitTestStoreSeedTpl      = $this->getCodeTemplate()->getUnitTestStoreSeedTpl($this->getIgnoreFields());
+        $unitTestStoreCodeTemplate = new UnitTestStoreCodeTemplate($this->tableInformationContract);
+        $unitTestStoreCodeTemplate->setIgnoreFields($this->getIgnoreFields());
+
+        $unitTestStoreSeedCodeTemplate = new UnitTestStoreSeedCodeTemplate($this->tableInformationContract);
+        $unitTestStoreSeedCodeTemplate->setIgnoreFields($this->getIgnoreFields());
 
         //********************************************************
 
@@ -103,17 +88,17 @@ class UnitTest implements TemplateHandleContract
 
         // 替换规则
         $replacementRules = [
-            '/{{NAMESPACE_PATH}}/'           => $namespacePath,
-            '/{{RNT}}/'                      => $controlName,
-            '/{{RNT_ROUTE_PATH}}/'           => Str::snake($controlName, '-'),
-            '/{{UNIT_TEST_STORE_CODE}}/'     => $unitTestStoreCodeTemplate,
-            '/{{UNIT_TEST_STORE_SEED_TPL}}/' => $unitTestStoreSeedTpl,
+            '/{{NAMESPACE_PATH}}/' => $namespacePath,
+            '/{{RNT}}/' => $controlName,
+            '/{{RNT_ROUTE_PATH}}/' => Str::snake($controlName, '-'),
+            '/{{UNIT_TEST_STORE_CODE}}/' => $unitTestStoreCodeTemplate->getCodeString(),
+            '/{{UNIT_TEST_STORE_SEED_TPL}}/' => $unitTestStoreSeedCodeTemplate->getCodeString(),
         ];
 
         // 替换规则-回调
         $replacementRuleCallbacks = [
             // 将 $Good 替换为 ->good
-            '/(\\$)(' . $controlName . ')/' => function ($match){
+            '/(\\$)(' . $controlName . ')/' => function ($match) {
                 //$full   = $match[0];
                 $symbol   = $match[1];
                 $name     = $match[2];
@@ -122,7 +107,7 @@ class UnitTest implements TemplateHandleContract
                 return $symbol . $humpName;
             },
             // 将 ->Good 替换为 ->good
-            '/(\->)(' . $controlName . ')/' => function ($match){
+            '/(\->)(' . $controlName . ')/' => function ($match) {
                 //$full   = $match[0];
                 $symbol = $match[1];
                 $name   = $match[2];
@@ -131,7 +116,7 @@ class UnitTest implements TemplateHandleContract
 
                 return $symbol . $humpName;
             },
-            '/(\->)(\\$)(\w+)/'             => function ($match){
+            '/(\->)(\\$)(\w+)/' => function ($match) {
                 $symbol   = $match[1];
                 $name     = $match[3];
                 $humpName = strtolower(substr($name, 0, 2)) . substr($name, 2);

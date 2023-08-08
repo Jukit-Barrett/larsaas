@@ -39,7 +39,7 @@ class TemplateObject implements TemplateContract
     /**
      * @return bool
      */
-    public function getForceCover() : bool
+    public function getForceCover(): bool
     {
         return $this->forceCover;
     }
@@ -48,7 +48,7 @@ class TemplateObject implements TemplateContract
      * @param bool $forceCover
      * @return TemplateObject
      */
-    public function setForceCover(bool $forceCover) : TemplateObject
+    public function setForceCover(bool $forceCover): TemplateObject
     {
         $this->forceCover = $forceCover;
 
@@ -58,7 +58,7 @@ class TemplateObject implements TemplateContract
     /**
      * @return string
      */
-    public function getSaveDirectory() : string
+    public function getSaveDirectory(): string
     {
         return $this->saveDirectory;
     }
@@ -67,7 +67,7 @@ class TemplateObject implements TemplateContract
      * @param string $saveDirectory
      * @return TemplateObject
      */
-    public function setSaveDirectory(string $saveDirectory) : TemplateObject
+    public function setSaveDirectory(string $saveDirectory): TemplateObject
     {
         $this->saveDirectory = $saveDirectory;
 
@@ -77,7 +77,7 @@ class TemplateObject implements TemplateContract
     /**
      * @return string
      */
-    public function getSaveFilename() : string
+    public function getSaveFilename(): string
     {
         return $this->saveFilename;
     }
@@ -86,7 +86,7 @@ class TemplateObject implements TemplateContract
      * @param string $saveFilename
      * @return TemplateObject
      */
-    public function setSaveFilename(string $saveFilename) : TemplateObject
+    public function setSaveFilename(string $saveFilename): TemplateObject
     {
         $this->saveFilename = $saveFilename;
 
@@ -96,7 +96,7 @@ class TemplateObject implements TemplateContract
     /**
      * @return string
      */
-    public function getSourceTemplateFile() : string
+    public function getSourceTemplateFile(): string
     {
         return $this->sourceTemplateFile;
     }
@@ -105,7 +105,7 @@ class TemplateObject implements TemplateContract
      * @param string $sourceTemplateFile
      * @return TemplateObject
      */
-    public function setSourceTemplateFile(string $sourceTemplateFile) : TemplateObject
+    public function setSourceTemplateFile(string $sourceTemplateFile): TemplateObject
     {
         $this->sourceTemplateFile = $sourceTemplateFile;
 
@@ -115,7 +115,7 @@ class TemplateObject implements TemplateContract
     /**
      * @return string[]
      */
-    public function getReplacementRules() : array
+    public function getReplacementRules(): array
     {
         return $this->replacementRules;
     }
@@ -124,7 +124,7 @@ class TemplateObject implements TemplateContract
      * @param string[] $replacementRules
      * @return TemplateObject
      */
-    public function setReplacementRules(array $replacementRules) : TemplateObject
+    public function setReplacementRules(array $replacementRules): TemplateObject
     {
         $this->replacementRules = $replacementRules;
 
@@ -134,7 +134,7 @@ class TemplateObject implements TemplateContract
     /**
      * @return string[]
      */
-    public function getReplacementRuleCallbacks() : array
+    public function getReplacementRuleCallbacks(): array
     {
         return $this->replacementRuleCallbacks;
     }
@@ -143,7 +143,7 @@ class TemplateObject implements TemplateContract
      * @param array $replacementRuleCallbacks
      * @return TemplateObject
      */
-    public function setReplacementRuleCallbacks(array $replacementRuleCallbacks) : TemplateObject
+    public function setReplacementRuleCallbacks(array $replacementRuleCallbacks): TemplateObject
     {
         $this->replacementRuleCallbacks = $replacementRuleCallbacks;
 

@@ -2,16 +2,17 @@
 
 namespace Mrzkit\LaravelCodeGenerator\Templates\RequestTemplates;
 
-use Mrzkit\LaravelCodeGenerator\CodeTemplate;
+use Mrzkit\LaravelCodeGenerator\CodeTemplates\RequestUpdateMessageCodeTemplate;
+use Mrzkit\LaravelCodeGenerator\CodeTemplates\RequestUpdateRuleCodeTemplate;
 use Mrzkit\LaravelCodeGenerator\Contracts\TableInformationContract;
 use Mrzkit\LaravelCodeGenerator\Contracts\TemplateContract;
 use Mrzkit\LaravelCodeGenerator\Contracts\TemplateHandleContract;
 use Mrzkit\LaravelCodeGenerator\TemplateObject;
-use Mrzkit\LaravelCodeGenerator\TemplateTool;
+use Mrzkit\LaravelCodeGenerator\TemplateUtil;
 
 class UpdateRequest implements TemplateHandleContract
 {
-    use TemplateTool;
+    use TemplateUtil;
 
     /**
      * @var string
@@ -23,44 +24,25 @@ class UpdateRequest implements TemplateHandleContract
      */
     private $tableInformationContract;
 
-    private $codeTemplate;
-
     public function __construct(string $controlName, TableInformationContract $tableInformationContract)
     {
         $this->controlName              = $controlName;
         $this->tableInformationContract = $tableInformationContract;
-        $this->codeTemplate             = new CodeTemplate($tableInformationContract);
     }
 
     /**
      * @return string
      */
-    public function getControlName() : string
+    public function getControlName(): string
     {
         return $this->controlName;
-    }
-
-    /**
-     * @return TableInformationContract
-     */
-    public function getTableInformationContract() : TableInformationContract
-    {
-        return $this->tableInformationContract;
-    }
-
-    /**
-     * @return CodeTemplate
-     */
-    public function getCodeTemplate() : CodeTemplate
-    {
-        return $this->codeTemplate;
     }
 
     /**
      * @desc
      * @return string[]
      */
-    public function getIgnoreFields() : array
+    public function getIgnoreFields(): array
     {
         return [
             "id", "createdBy", "createdAt", "updatedBy", "updatedAt", "deletedBy", "deletedAt",
@@ -69,7 +51,7 @@ class UpdateRequest implements TemplateHandleContract
         ];
     }
 
-    public function handle() : TemplateContract
+    public function handle(): TemplateContract
     {
         $fullControlName = $this->getControlName();
 
@@ -79,7 +61,9 @@ class UpdateRequest implements TemplateHandleContract
 
         $directoryPath = static::processDirectoryPath($fullControlName);
 
-        $requestTemplateRenderContract = $this->getCodeTemplate()->getRequestUpdateTpl($this->getIgnoreFields());
+        $requestUpdateRuleCodeTemplate = new RequestUpdateRuleCodeTemplate($this->tableInformationContract);
+
+        $requestUpdateMessageCodeTemplate = new RequestUpdateMessageCodeTemplate($this->tableInformationContract);
 
         //********************************************************
 
@@ -97,10 +81,10 @@ class UpdateRequest implements TemplateHandleContract
 
         // 替换规则
         $replacementRules = [
-            '/{{NAMESPACE_PATH}}/'             => $namespacePath,
-            '/{{RNT}}/'                        => $controlName,
-            '/{{REQUEST_UPDATE_RULE_TPL}}/'    => $requestTemplateRenderContract->getRuleString(),
-            '/{{REQUEST_UPDATE_MESSAGE_TPL}}/' => $requestTemplateRenderContract->getMessageString(),
+            '/{{NAMESPACE_PATH}}/' => $namespacePath,
+            '/{{RNT}}/' => $controlName,
+            '/{{REQUEST_UPDATE_RULE_TPL}}/' => $requestUpdateRuleCodeTemplate->getCodeString(),
+            '/{{REQUEST_UPDATE_MESSAGE_TPL}}/' => $requestUpdateMessageCodeTemplate->getCodeString(),
         ];
 
         // 替换规则-回调

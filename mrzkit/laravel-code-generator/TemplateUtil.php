@@ -2,15 +2,21 @@
 
 namespace Mrzkit\LaravelCodeGenerator;
 
-trait TemplateTool
+trait TemplateUtil
 {
     /**
      * @desc 验证控制器名称
      * @param string $controlName
      * @return bool
      */
-    public static function validateControlName(string $controlName) : bool
+    public static function validateControlName(string $controlName): bool
     {
+        $pattern = "/^[A-Za-z]\w+?/";
+
+        if (preg_match($pattern, $controlName)) {
+            return true;
+        }
+
         $pattern = "/^[A-Za-z](\w+)?(\.?\w+)?/";
 
         if (preg_match($pattern, $controlName)) {
@@ -25,7 +31,7 @@ trait TemplateTool
      * @param string $controlName
      * @return string
      */
-    public static function processFirstControlName(string $controlName) : string
+    public static function processFirstControlName(string $controlName): string
     {
         $numericalPosition = strpos($controlName, '.');
 
@@ -43,7 +49,7 @@ trait TemplateTool
      * @param string $controlName
      * @return string
      */
-    public static function processControlName(string $controlName) : string
+    public static function processControlName(string $controlName): string
     {
         $numericalPosition = strripos($controlName, '.');
 
@@ -59,7 +65,7 @@ trait TemplateTool
      * @param string $controlName
      * @return string
      */
-    public static function processNamespacePath(string $controlName) : string
+    public static function processNamespacePath(string $controlName): string
     {
         $numericalPosition = strripos($controlName, '.');
 
@@ -78,7 +84,7 @@ trait TemplateTool
      * @param string $controlName
      * @return string
      */
-    public static function processDirectoryPath(string $controlName) : string
+    public static function processDirectoryPath(string $controlName): string
     {
         $namespacePath = static::processNamespacePath($controlName);
 

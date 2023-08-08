@@ -64,4 +64,7 @@ interface TableInformationContract
      * @return array
      */
     public function getShardCountConfig() : array;
+
+    public function getRenderTableName() : string;
+
 }

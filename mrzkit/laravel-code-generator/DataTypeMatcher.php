@@ -31,7 +31,7 @@ class DataTypeMatcher implements DataTypeMatchContract
     /**
      * @return String
      */
-    public function getField() : string
+    public function getField(): string
     {
         return $this->field;
     }
@@ -39,7 +39,7 @@ class DataTypeMatcher implements DataTypeMatchContract
     /**
      * @return String
      */
-    public function getType() : string
+    public function getType(): string
     {
         return $this->type;
     }
@@ -47,26 +47,30 @@ class DataTypeMatcher implements DataTypeMatchContract
     /**
      * @return String
      */
-    public function getComment() : string
+    public function getComment(): string
     {
         return $this->comment;
     }
 
     /**
-     * @desc
+     * @desc 匹配整型
      * @return array
      */
-    public function matchInt() : array
+    public function matchInt(): array
     {
         $type = strtolower($this->getType());
 
-        if (preg_match('/unsigned/', $type)) {
+        if (str_contains($type, "unsigned")) {
             $isSigned = true;
         } else {
             $isSigned = false;
         }
 
-        if (preg_match('/^int/', $type)) {
+        // 方式1: preg_match('/^int/', $type)
+        // 方式2: 0 === strpos($type, "int")
+        // 方式3: str_starts_with($type, "int")
+
+        if (str_starts_with($type, "int")) {
             //
             $result["type"] = "integer";
             if ($isSigned) {
@@ -78,7 +82,7 @@ class DataTypeMatcher implements DataTypeMatchContract
                 $result["min"] = -((4294967295 >> 1) + 1);
                 $result["max"] = (4294967295 >> 1);
             }
-        } else if (preg_match('/^tinyint/', $type)) {
+        } else if (str_starts_with($type, "tinyint")) {
             //
             $result["type"] = "integer";
             if ($isSigned) {
@@ -90,7 +94,7 @@ class DataTypeMatcher implements DataTypeMatchContract
                 $result["min"] = -128;
                 $result["max"] = 127;
             }
-        } else if (preg_match('/^smallint/', $type)) {
+        } else if (str_starts_with($type, "smallint")) {
             //
             $result["type"] = "integer";
             if ($isSigned) {
@@ -102,7 +106,7 @@ class DataTypeMatcher implements DataTypeMatchContract
                 $result["min"] = -32768;
                 $result["max"] = 32767;
             }
-        } else if (preg_match('/^mediumint/', $type)) {
+        } else if (str_starts_with($type, "mediumint")) {
             //
             $result["type"] = "integer";
             if ($isSigned) {
@@ -114,7 +118,7 @@ class DataTypeMatcher implements DataTypeMatchContract
                 $result["min"] = -8388608;
                 $result["max"] = 8388607;
             }
-        } else if (preg_match('/^bigint/', $type)) {
+        } else if (str_starts_with($type, "bigint")) {
             //
             $result["type"] = "integer";
             if ($isSigned) {
@@ -135,14 +139,14 @@ class DataTypeMatcher implements DataTypeMatchContract
     }
 
     /**
-     * @desc
+     * @desc 匹配字符串类型
      * @return array
      */
-    public function matchString() : array
+    public function matchString(): array
     {
         $type = strtolower($this->getType());
 
-        if (preg_match('/^char/', $type)) {
+        if (0 === strpos($type, "char")) {
             //
             $result["type"] = "string";
             if (preg_match('/\((\d+)\)/', $type, $matches)) {
@@ -152,7 +156,7 @@ class DataTypeMatcher implements DataTypeMatchContract
                 $result["min"] = 0;
                 $result["max"] = 255;
             }
-        } else if (preg_match('/^varchar/', $type)) {
+        } else if (str_starts_with($type, "varchar")) {
             //
             $result["type"] = "string";
             if (preg_match('/\((\d+)\)/', $type, $matches)) {
@@ -162,35 +166,35 @@ class DataTypeMatcher implements DataTypeMatchContract
                 $result["min"] = 0;
                 $result["max"] = 65535;
             }
-        } else if (preg_match('/^tinytext/', $type)) {
+        } else if (str_starts_with($type, "tinytext")) {
             $result["type"] = "string";
             $result["min"]  = 0;
             $result["max"]  = 255;
-        } else if (preg_match('/^text/', $type)) {
+        } else if (str_starts_with($type, "text")) {
             $result["type"] = "string";
             $result["min"]  = 0;
             $result["max"]  = 65535;
-        } else if (preg_match('/^mediumtext/', $type)) {
+        } else if (str_starts_with($type, "mediumtext")) {
             $result["type"] = "string";
             $result["min"]  = 0;
             $result["max"]  = 1677215;
-        } else if (preg_match('/^longtext/', $type)) {
+        } else if (str_starts_with($type, "longtext")) {
             $result["type"] = "string";
             $result["min"]  = 0;
             $result["max"]  = 4294967295;
-        } else if (preg_match('/^tinyblob/', $type)) {
+        } else if (str_starts_with($type, "tinyblob")) {
             $result["type"] = "string";
             $result["min"]  = 0;
             $result["max"]  = 255;
-        } else if (preg_match('/^blob/', $type)) {
+        } else if (str_starts_with($type, "blob")) {
             $result["type"] = "string";
             $result["min"]  = 0;
             $result["max"]  = 65535;
-        } else if (preg_match('/^mediumblob/', $type)) {
+        } else if (str_starts_with($type, "mediumblob")) {
             $result["type"] = "string";
             $result["min"]  = 0;
             $result["max"]  = 1677215;
-        } else if (preg_match('/^longblob/', $type)) {
+        } else if (str_starts_with($type, "longblob")) {
             $result["type"] = "string";
             $result["min"]  = 0;
             $result["max"]  = 4294967295;
@@ -203,20 +207,20 @@ class DataTypeMatcher implements DataTypeMatchContract
     }
 
     /**
-     * @desc
+     * @desc 匹配浮点型
      * @return array
      */
-    public function matchFloat() : array
+    public function matchFloat(): array
     {
         $type = strtolower($this->getType());
 
-        if (preg_match('/unsigned/', $type)) {
+        if (str_contains($type, "unsigned")) {
             $isSigned = true;
         } else {
             $isSigned = false;
         }
 
-        if (preg_match('/^decimal/', $type)) {
+        if (str_starts_with($type, "decimal")) {
             //
             $result["type"] = "double";
             if ($isSigned) {
@@ -228,7 +232,7 @@ class DataTypeMatcher implements DataTypeMatchContract
                 $result["min"] = PHP_FLOAT_MIN;
                 $result["max"] = PHP_FLOAT_MAX;
             }
-        } else if (preg_match('/^double/', $type)) {
+        } else if (str_starts_with($type, "double")) {
             //
             $result["type"] = "double";
             if ($isSigned) {
@@ -240,7 +244,7 @@ class DataTypeMatcher implements DataTypeMatchContract
                 $result["min"] = PHP_FLOAT_MIN;
                 $result["max"] = PHP_FLOAT_MAX;
             }
-        } else if (preg_match('/^float/', $type)) {
+        } else if (str_starts_with($type, "float")) {
             //
             $result["type"] = "double";
             if ($isSigned) {
@@ -261,34 +265,34 @@ class DataTypeMatcher implements DataTypeMatchContract
     }
 
     /**
-     * @desc
+     * @desc 匹配日期类型
      * @return array
      */
-    public function matchDate() : array
+    public function matchDate(): array
     {
         $type = strtolower($this->getType());
 
-        if (preg_match('/^date/', $type)) {
+        if (str_starts_with($type, "date")) {
             //
             $result["type"] = "string";
             $result["min"]  = "";
             $result["max"]  = "";
-        } else if (preg_match('/^time/', $type)) {
+        } else if (str_starts_with($type, "time")) {
             //
             $result["type"] = "string";
             $result["min"]  = "";
             $result["max"]  = "";
-        } else if (preg_match('/^year/', $type)) {
+        } else if (str_starts_with($type, "year")) {
             //
             $result["type"] = "string";
             $result["min"]  = "";
             $result["max"]  = "";
-        } else if (preg_match('/^datetime/', $type)) {
+        } else if (str_starts_with($type, "datetime")) {
             //
             $result["type"] = "string";
             $result["min"]  = "";
             $result["max"]  = "";
-        } else if (preg_match('/^timestamp/', $type)) {
+        } else if (str_starts_with($type, "timestamp")) {
             //
             $result["type"] = "string";
             $result["min"]  = "";

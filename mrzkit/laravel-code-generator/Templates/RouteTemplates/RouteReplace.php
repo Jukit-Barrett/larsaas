@@ -6,11 +6,11 @@ use Illuminate\Support\Str;
 use Mrzkit\LaravelCodeGenerator\Contracts\TemplateContract;
 use Mrzkit\LaravelCodeGenerator\Contracts\TemplateHandleContract;
 use Mrzkit\LaravelCodeGenerator\TemplateObject;
-use Mrzkit\LaravelCodeGenerator\TemplateTool;
+use Mrzkit\LaravelCodeGenerator\TemplateUtil;
 
 class RouteReplace implements TemplateHandleContract
 {
-    use TemplateTool;
+    use TemplateUtil;
 
     /**
      * @var string

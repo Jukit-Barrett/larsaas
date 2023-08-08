@@ -6,15 +6,22 @@ use App\Http\Requests\Activity\IndexActivityRequest;
 use App\Http\Requests\Activity\StoreActivityRequest;
 use App\Http\Requests\Activity\UpdateActivityRequest;
 use App\Services\ActivityService;
-use Illuminate\Support\Str;
 use Mrzkit\LaravelCodeGenerator\TableInformation;
 use Mrzkit\LaravelCodeGenerator\TemplateCreators\ControllerTemplateCreator;
+use Mrzkit\LaravelCodeGenerator\TemplateCreators\ModelTemplateCreator;
+use Mrzkit\LaravelCodeGenerator\TemplateCreators\RepositoryTemplateCreator;
+use Mrzkit\LaravelCodeGenerator\TemplateCreators\RequestTemplateCreator;
+use Mrzkit\LaravelCodeGenerator\TemplateCreators\RouteTemplateCreator;
 use Mrzkit\LaravelCodeGenerator\TemplateCreators\ServiceTemplateCreator;
+use Mrzkit\LaravelCodeGenerator\TemplateCreators\UnitTestTemplateCreator;
 use Mrzkit\LaravelCodeGenerator\TemplateHandler;
+use Mrzkit\LaravelCodeGenerator\TemplateUtil;
 use Mrzkit\LaravelEloquentEnhance\Utils\ApiResponseEntity;
 
 class ActivityController extends Controller
 {
+    use TemplateUtil;
+
     public function __construct(protected ActivityService $service)
     {
 
@@ -88,7 +95,7 @@ class ActivityController extends Controller
     public function codeGenerator()
     {
         $inputParams = [
-            "tablePrefix" => "ch_",
+            "tablePrefix" => env("DB_PREFIX"),
             "tableName" => "system_header",
 //            "controls" => "SystemHeader",
         ];
@@ -97,20 +104,110 @@ class ActivityController extends Controller
 
         $templateHandler = new TemplateHandler();
 
-        $controlName = Str::studly($tableInformation->getTableName());
+        $result = [];
+
+        // Repository
+        $creator = new RepositoryTemplateCreator($templateHandler, $tableInformation);
+
+        $result["RepositoryTemplateCreator"] = $creator->handle();
+
+        // Service
+        $creator = new ServiceTemplateCreator($inputParams["controls"], $templateHandler, $tableInformation);
+
+        $result["ServiceTemplateCreator"] = $creator->handle();
+
+        // Request
+        $creator = new RequestTemplateCreator($inputParams["controls"], $templateHandler, $tableInformation);
+
+        $result["RequestTemplateCreator"] = $creator->handle();
 
         // Controller
-        $creator = new ControllerTemplateCreator($controlName, $templateHandler);
+        $creator = new ControllerTemplateCreator($inputParams["controls"], $templateHandler);
 
         $result["ControllerTemplateCreator"] = $creator->handle();
 
+        // Route
+        $creator = new RouteTemplateCreator($inputParams["controls"], $templateHandler);
 
-        // Service
-        $creator = new ServiceTemplateCreator($controlName, $templateHandler, $tableInformation);
+        $result["RouteTemplateCreator"] = $creator->handle();
 
-        $result["ServiceTemplateCreator"] = $creator->handle();
+        // UnitTest
+        $creator = new UnitTestTemplateCreator($inputParams["controls"], $templateHandler, $tableInformation);
+
+        $result["UnitTestTemplateCreator"] = $creator->handle();
 
         return ApiResponseEntity::success($result);
 
     }
+
+    public static function callCreator(array $params): array
+    {
+        if ($params["tableShard"]) {
+            $inputParams = [
+                "tableShard" => 1,
+                "shardCount" => $params["shardCount"] >= 2 ? $params["shardCount"] : 2,
+                "maxShardCount" => 64,
+                "tablePrefix" => $params["tablePrefix"],
+                "tableName" => $params["tableName"],
+                "controls" => $params["controls"],
+            ];
+        } else {
+            $inputParams = [
+                "tableShard" => 0,
+                "shardCount" => 0,
+                "maxShardCount" => 0,
+                "tablePrefix" => $params["tablePrefix"],
+                "tableName" => $params["tableName"],
+                "controls" => $params["controls"],
+            ];
+        }
+
+        if (!static::validateControlName($inputParams["controls"])) {
+            throw new \Exception("格式有误，参考格式: A.B 或 A.B.C ");
+        }
+
+        $tableInformation = new TableInformation($inputParams["tableName"], $inputParams["tablePrefix"]);
+
+        $templateHandler = new TemplateHandler();
+
+        $result = [];
+
+        // Model
+        $creator = new ModelTemplateCreator($templateHandler, $tableInformation);
+
+        $result["ModelTemplateCreator"] = $creator->handle();
+
+        // Repository
+        $creator = new RepositoryTemplateCreator($templateHandler, $tableInformation);
+
+        $result["RepositoryTemplateCreator"] = $creator->handle();
+
+        // Service
+        $creator = new ServiceTemplateCreator($inputParams["controls"], $templateHandler, $tableInformation);
+
+        $result["ServiceTemplateCreator"] = $creator->handle();
+
+        // Request
+        $creator = new RequestTemplateCreator($inputParams["controls"], $templateHandler, $tableInformation);
+
+        $result["RequestTemplateCreator"] = $creator->handle();
+
+        // Controller
+        $creator = new ControllerTemplateCreator($inputParams["controls"], $templateHandler);
+
+        $result["ControllerTemplateCreator"] = $creator->handle();
+
+        // Route
+        $creator = new RouteTemplateCreator($inputParams["controls"], $templateHandler);
+
+        $result["RouteTemplateCreator"] = $creator->handle();
+
+        // UnitTest
+        $creator = new UnitTestTemplateCreator($inputParams["controls"], $templateHandler, $tableInformation);
+
+        $result["UnitTestTemplateCreator"] = $creator->handle();
+
+        return $result;
+    }
+
 }

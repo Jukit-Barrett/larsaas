@@ -1,30 +1,24 @@
 <?php
 
-namespace Mrzkit\LaravelCodeGenerator\Templates\RepositoryTemplates;
+namespace Mrzkit\LaravelCodeGenerator\Templates\ModelTemplates;
 
-use Mrzkit\LaravelCodeGenerator\CodeTemplate;
+use Mrzkit\LaravelCodeGenerator\CodeTemplates\ModelFillableCodeTemplate;
+use Mrzkit\LaravelCodeGenerator\CodeTemplates\ShardConfigCodeTemplate;
 use Mrzkit\LaravelCodeGenerator\Contracts\TableInformationContract;
 use Mrzkit\LaravelCodeGenerator\Contracts\TemplateContract;
 use Mrzkit\LaravelCodeGenerator\Contracts\TemplateHandleContract;
 use Mrzkit\LaravelCodeGenerator\TemplateObject;
 
-class ModelRepositoryFactory implements TemplateHandleContract
+class Model implements TemplateHandleContract
 {
     /**
      * @var TableInformationContract
      */
     private $tableInformationContract;
 
-    /**
-     * @var CodeTemplate
-     */
-    private $codeTemplate;
-
     public function __construct(TableInformationContract $tableInformationContract)
     {
         $this->tableInformationContract = $tableInformationContract;
-
-        $this->codeTemplate = new CodeTemplate($tableInformationContract);
     }
 
     /**
@@ -35,29 +29,15 @@ class ModelRepositoryFactory implements TemplateHandleContract
         return $this->tableInformationContract;
     }
 
-    /**
-     * @return CodeTemplate
-     */
-    public function getCodeTemplate() : CodeTemplate
+    public function handle(): TemplateContract
     {
-        return $this->codeTemplate;
-    }
+        $tableInformationContract = $this->getTableInformationContract();
 
-    /**
-     * @desc
-     * @return string[]
-     */
-    public function getIgnoreFields() : array
-    {
-        return [
-            "deletedBy", "deletedAt",
-            "deleted_by", "deleted_at",
-        ];
-    }
+        $tableName = $tableInformationContract->getRenderTableName();
 
-    public function handle() : TemplateContract
-    {
-        $tableName = $this->getCodeTemplate()->getRenderTableName();
+        $modelFillableCodeTemplate = new ModelFillableCodeTemplate($this->tableInformationContract);
+
+        $shardConfigCodeTemplate = new ShardConfigCodeTemplate($this->tableInformationContract);
 
         //********************************************************
 
@@ -68,14 +48,21 @@ class ModelRepositoryFactory implements TemplateHandleContract
         $saveDirectory = app()->basePath("app/Repositories/{$tableName}");
 
         // 保存文件名称
-        $saveFilename = $saveDirectory . '/' . $tableName . 'RepositoryFactory.php';
+        $saveFilename = $saveDirectory . '/' . $tableName . '.php';
 
         // 模板文件
-        $sourceTemplateFile = __DIR__ . '/tpl/ModelRepositoryFactory.tpl';
+        if ($tableInformationContract->getTableShard()) {
+            $sourceTemplateFile = __DIR__ . '/stpl/Model.tpl';
+        } else {
+            $sourceTemplateFile = __DIR__ . '/tpl/Model.tpl';
+        }
 
         // 替换规则
         $replacementRules = [
             '/{{RNT}}/' => $tableName,
+            '/{{FILL_ABLE_TPL}}/' => $modelFillableCodeTemplate->getCodeString(),
+            '/{{MAX_SHARD_COUNT}}/' => $tableInformationContract->getMaxShardCount(),
+            '/{{SHARD_CONFIG_TPL}}/' => $shardConfigCodeTemplate->getCodeString(),
         ];
 
         // 替换规则-回调
@@ -94,4 +81,5 @@ class ModelRepositoryFactory implements TemplateHandleContract
 
         return $templateObject;
     }
+
 }

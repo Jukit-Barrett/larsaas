@@ -37,24 +37,42 @@ class TableInformation implements TableInformationContract
         // 全表名
         $this->tableFullName = $this->tablePrefix . $this->tableName;
 
-        // 分表
-        $this->tableShard = false;
+        // 是否分表
+        $this->tableShard = $this->isSharding();
         // 分表总数
         $this->shardCount = 0;
         // 最大分表数
         $this->maxShardCount = 0;
         // 表后缀
-        $this->tableSuffix = "";
-
-        // 表字段全信息
-        $this->tableFullColumns = [];
-        // 表字段
-        $this->tableFields = [];
-
+        $this->initTableSuffix();
 
         $this->initTable();
+        // 表字段全信息
         $this->initTableFullColumns();
+        // 表字段
         $this->initTableFields();
+    }
+
+    // 是否分表
+    private function isSharding(): string
+    {
+        if (preg_match('/_(\d+)$/', $this->tableFullName, $matches)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    // 初始化表后缀
+    private function initTableSuffix()
+    {
+        $tableSuffix = "";
+        if ($this->tableShard) {
+            if (preg_match('/_(\d+)$/', $this->tableFullName, $matches)) {
+                $tableSuffix = $matches[0];
+            }
+        }
+        $this->tableSuffix = $tableSuffix;
     }
 
     private function initNormalTable()
@@ -69,10 +87,6 @@ class TableInformation implements TableInformationContract
     private function initShardTable()
     {
         $this->tablePrefix = strlen($this->getTablePrefix()) > 0 ? Str::snake($this->getTablePrefix()) : $this->getTablePrefix();
-
-        if ($this->getShardCount() < 2 || $this->getShardCount() > $this->getMaxShardCount()) {
-            throw new \Exception("分表数必须是2~64");
-        }
 
         if (!$this->isPower($this->getShardCount())) {
             throw new \Exception("分表数必须是2次方数");
@@ -292,5 +306,21 @@ class TableInformation implements TableInformationContract
         }
 
         return $shardCountConfig;
+    }
+
+    public function getRenderTableName(): string
+    {
+        $tableName = Str::snake($this->getTableName());
+
+        if ($this->getTableShard()) {
+            $suffix    = $this->getTableSuffix();
+            $tableName = Str::replace($suffix, "", $tableName);
+        }
+
+        $tableName = Str::camel($tableName);
+
+        $tableName = ucfirst($tableName);
+
+        return $tableName;
     }
 }

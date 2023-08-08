@@ -2,16 +2,17 @@
 
 namespace Mrzkit\LaravelCodeGenerator\Templates\ServiceTemplates;
 
-use Mrzkit\LaravelCodeGenerator\CodeTemplate;
+use Mrzkit\LaravelCodeGenerator\CodeTemplates\ServiceStoreCodeTemplate;
+use Mrzkit\LaravelCodeGenerator\CodeTemplates\ServiceUpdateCodeTemplate;
 use Mrzkit\LaravelCodeGenerator\Contracts\TableInformationContract;
 use Mrzkit\LaravelCodeGenerator\Contracts\TemplateContract;
 use Mrzkit\LaravelCodeGenerator\Contracts\TemplateHandleContract;
 use Mrzkit\LaravelCodeGenerator\TemplateObject;
-use Mrzkit\LaravelCodeGenerator\TemplateTool;
+use Mrzkit\LaravelCodeGenerator\TemplateUtil;
 
 class Service implements TemplateHandleContract
 {
-    use TemplateTool;
+    use TemplateUtil;
 
     /**
      * @var string 控制器名称
@@ -23,47 +24,25 @@ class Service implements TemplateHandleContract
      */
     private $tableInformationContract;
 
-    /**
-     * @var CodeTemplate
-     */
-    private $codeTemplate;
-
     public function __construct(string $controlName, TableInformationContract $tableInformationContract)
     {
         $this->controlName              = $controlName;
         $this->tableInformationContract = $tableInformationContract;
-        $this->codeTemplate             = new CodeTemplate($tableInformationContract);
     }
 
     /**
      * @return string
      */
-    public function getControlName() : string
+    public function getControlName(): string
     {
         return $this->controlName;
-    }
-
-    /**
-     * @return TableInformationContract
-     */
-    public function getTableInformationContract() : TableInformationContract
-    {
-        return $this->tableInformationContract;
-    }
-
-    /**
-     * @return CodeTemplate
-     */
-    public function getCodeTemplate() : CodeTemplate
-    {
-        return $this->codeTemplate;
     }
 
     /**
      * @desc
      * @return string[]
      */
-    public function getIgnoreFields() : array
+    public function getIgnoreFields(): array
     {
         return [
             "id", "createdBy", "createdAt", "updatedBy", "updatedAt", "deletedBy", "deletedAt",
@@ -71,7 +50,7 @@ class Service implements TemplateHandleContract
         ];
     }
 
-    public function handle() : TemplateContract
+    public function handle(): TemplateContract
     {
         $fullControlName = $this->getControlName();
 
@@ -83,11 +62,16 @@ class Service implements TemplateHandleContract
 
         //********************************************************
 
-        $repositoryName           = $this->getCodeTemplate()->getRenderTableName();
-        $serviceUpdateString      = $this->getCodeTemplate()->getServiceUpdateTpl($this->getIgnoreFields(), "params");
-        $serviceBatchUpdateString = $this->getCodeTemplate()->getServiceUpdateTpl($this->getIgnoreFields(), "param");
-        $serviceStoreTpl          = $this->getCodeTemplate()->getServiceStoreTpl($this->getIgnoreFields(), "params");
-        $serviceBatchStoreTpl     = $this->getCodeTemplate()->getServiceStoreTpl($this->getIgnoreFields(), "param");
+        $serviceUpdateCodeTemplate = new ServiceUpdateCodeTemplate($this->tableInformationContract);
+        $serviceUpdateString       = $serviceUpdateCodeTemplate->setIgnoreFields($this->getIgnoreFields())
+            ->setItemName("inputParams")->setParamName("params")->getCodeString();
+
+
+        $repositoryName = $this->tableInformationContract->getRenderTableName();
+
+        $ServiceStoreCodeTemplate = new ServiceStoreCodeTemplate($this->tableInformationContract);
+        $serviceStoreTpl          = $ServiceStoreCodeTemplate->setIgnoreFields($this->getIgnoreFields())
+            ->setItemName("inputParams")->getCodeString();
 
         // 数据仓库名称
         $repository = "{$repositoryName}Repository";
@@ -108,14 +92,12 @@ class Service implements TemplateHandleContract
 
         // 替换规则
         $replacementRules = [
-            '/{{NAMESPACE_PATH}}/'           => $namespacePath,
-            '/{{RNT}}/'                      => $controlName,
-            '/{{SERVICE_UPDATE_TPL}}/'       => $serviceUpdateString,
-            '/{{SERVICE_BATCH_UPDATE_TPL}}/' => $serviceBatchUpdateString,
-            '/{{SERVICE_STORE_TPL}}/'        => $serviceStoreTpl,
-            '/{{SERVICE_BATCH_STORE_TPL}}/'  => $serviceBatchStoreTpl,
-            '/{{REPOSITORY}}/'               => $repository,
-            '/{{REPOSITORY_NAME}}/'          => $repositoryName,
+            '/{{NAMESPACE_PATH}}/' => $namespacePath,
+            '/{{RNT}}/' => $controlName,
+            '/{{SERVICE_UPDATE_TPL}}/' => $serviceUpdateString,
+            '/{{SERVICE_STORE_TPL}}/' => $serviceStoreTpl,
+            '/{{REPOSITORY}}/' => $repository,
+            '/{{REPOSITORY_NAME}}/' => $repositoryName,
         ];
 
         dd($replacementRules);

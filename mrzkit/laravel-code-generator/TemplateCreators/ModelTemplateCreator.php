@@ -6,14 +6,10 @@ use Mrzkit\LaravelCodeGenerator\Contracts\TableInformationContract;
 use Mrzkit\LaravelCodeGenerator\Contracts\TemplateCreatorContract;
 use Mrzkit\LaravelCodeGenerator\Contracts\TemplateHandleContract;
 use Mrzkit\LaravelCodeGenerator\Contracts\TemplateHandlerContract;
-use Mrzkit\LaravelCodeGenerator\Templates\ServiceTemplates\Service;
+use Mrzkit\LaravelCodeGenerator\Templates\ModelTemplates\Model;
 
-class ServiceTemplateCreator implements TemplateCreatorContract
+class ModelTemplateCreator implements TemplateCreatorContract
 {
-    /**
-     * @var string
-     */
-    private $controlName;
 
     /**
      * @var TemplateHandlerContract
@@ -25,23 +21,22 @@ class ServiceTemplateCreator implements TemplateCreatorContract
      */
     private $tableInformationContract;
 
-    public function __construct(string $controlName, TemplateHandlerContract $templateHandlerContract, TableInformationContract $tableInformationContract)
+    public function __construct(TemplateHandlerContract $templateHandlerContract, TableInformationContract $tableInformationContract)
     {
-        $this->controlName              = $controlName;
         $this->templateHandlerContract  = $templateHandlerContract;
         $this->tableInformationContract = $tableInformationContract;
     }
 
-    protected function createService(): TemplateHandleContract
+    protected function createModel(): TemplateHandleContract
     {
-        return new Service($this->controlName, $this->tableInformationContract);
+        return new Model($this->tableInformationContract);
     }
 
     public function handle(): array
     {
         $result = [];
 
-        $templateHandler = $this->templateHandlerContract->setTemplateContract($this->createService()->handle());
+        $templateHandler = $this->templateHandlerContract->setTemplateContract($this->createModel()->handle());
 
         $result[] = [
             'result' => $templateHandler->getWriteResult(),

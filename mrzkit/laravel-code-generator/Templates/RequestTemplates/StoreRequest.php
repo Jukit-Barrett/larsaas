@@ -2,16 +2,17 @@
 
 namespace Mrzkit\LaravelCodeGenerator\Templates\RequestTemplates;
 
-use Mrzkit\LaravelCodeGenerator\CodeTemplate;
+use Mrzkit\LaravelCodeGenerator\CodeTemplates\RequestStoreMessageCodeTemplate;
+use Mrzkit\LaravelCodeGenerator\CodeTemplates\RequestStoreRuleCodeTemplate;
 use Mrzkit\LaravelCodeGenerator\Contracts\TableInformationContract;
 use Mrzkit\LaravelCodeGenerator\Contracts\TemplateContract;
 use Mrzkit\LaravelCodeGenerator\Contracts\TemplateHandleContract;
 use Mrzkit\LaravelCodeGenerator\TemplateObject;
-use Mrzkit\LaravelCodeGenerator\TemplateTool;
+use Mrzkit\LaravelCodeGenerator\TemplateUtil;
 
 class StoreRequest implements TemplateHandleContract
 {
-    use TemplateTool;
+    use TemplateUtil;
 
     /**
      * @var string
@@ -23,44 +24,25 @@ class StoreRequest implements TemplateHandleContract
      */
     private $tableInformationContract;
 
-    private $codeTemplate;
-
     public function __construct(string $controlName, TableInformationContract $tableInformationContract)
     {
         $this->controlName              = $controlName;
         $this->tableInformationContract = $tableInformationContract;
-        $this->codeTemplate             = new CodeTemplate($tableInformationContract);
     }
 
     /**
      * @return string
      */
-    public function getControlName() : string
+    public function getControlName(): string
     {
         return $this->controlName;
-    }
-
-    /**
-     * @return TableInformationContract
-     */
-    public function getTableInformationContract() : TableInformationContract
-    {
-        return $this->tableInformationContract;
-    }
-
-    /**
-     * @return CodeTemplate
-     */
-    public function getCodeTemplate() : CodeTemplate
-    {
-        return $this->codeTemplate;
     }
 
     /**
      * @desc
      * @return string[]
      */
-    public function getIgnoreFields() : array
+    public function getIgnoreFields(): array
     {
         return [
             "id", "createdBy", "createdAt", "updatedBy", "updatedAt", "deletedBy", "deletedAt",
@@ -69,7 +51,7 @@ class StoreRequest implements TemplateHandleContract
         ];
     }
 
-    public function handle() : TemplateContract
+    public function handle(): TemplateContract
     {
         $fullControlName = $this->getControlName();
 
@@ -79,7 +61,13 @@ class StoreRequest implements TemplateHandleContract
 
         $directoryPath = static::processDirectoryPath($fullControlName);
 
-        $requestTemplateRenderContract = $this->getCodeTemplate()->getRequestStoreTpl($this->getIgnoreFields());
+        $requestStoreRuleCodeTemplate = new RequestStoreRuleCodeTemplate($this->tableInformationContract);
+
+        $requestStoreRuleCodeTemplate->setIgnoreFields($this->getIgnoreFields());
+
+        $requestStoreMessageCodeTemplate = new RequestStoreMessageCodeTemplate($this->tableInformationContract);
+
+        $requestStoreMessageCodeTemplate->setIgnoreFields($this->getIgnoreFields());
 
         //********************************************************
 
@@ -98,9 +86,9 @@ class StoreRequest implements TemplateHandleContract
         // 替换规则
         $replacementRules = [
             '/{{NAMESPACE_PATH}}/' => $namespacePath,
-            '/{{RNT}}/'            => $controlName,
-            '/{{REQUEST_STORE_RULE_TPL}}/'    => $requestTemplateRenderContract->getRuleString(),
-            '/{{REQUEST_STORE_MESSAGE_TPL}}/' => $requestTemplateRenderContract->getMessageString(),
+            '/{{RNT}}/' => $controlName,
+            '/{{REQUEST_STORE_RULE_TPL}}/' => $requestStoreRuleCodeTemplate->getCodeString(),
+            '/{{REQUEST_STORE_MESSAGE_TPL}}/' => $requestStoreMessageCodeTemplate->getCodeString(),
         ];
 
         // 替换规则-回调
