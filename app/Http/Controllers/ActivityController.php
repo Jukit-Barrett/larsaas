@@ -7,7 +7,6 @@ use App\Http\Requests\Activity\StoreActivityRequest;
 use App\Http\Requests\Activity\UpdateActivityRequest;
 use App\Services\ActivityService;
 use Mrzkit\LaravelCodeGenerator\TableDetail;
-use Mrzkit\LaravelCodeGenerator\TableInformation;
 use Mrzkit\LaravelCodeGenerator\TemplateCreators\ControllerTemplateCreator;
 use Mrzkit\LaravelCodeGenerator\TemplateCreators\ModelTemplateCreator;
 use Mrzkit\LaravelCodeGenerator\TemplateCreators\RepositoryFactoryTemplateCreator;
@@ -17,7 +16,6 @@ use Mrzkit\LaravelCodeGenerator\TemplateCreators\RouteTemplateCreator;
 use Mrzkit\LaravelCodeGenerator\TemplateCreators\ServiceFactoryTemplateCreator;
 use Mrzkit\LaravelCodeGenerator\TemplateCreators\ServiceTemplateCreator;
 use Mrzkit\LaravelCodeGenerator\TemplateCreators\UnitTestTemplateCreator;
-use Mrzkit\LaravelCodeGenerator\TemplateHandler;
 use Mrzkit\LaravelCodeGenerator\TemplateUtil;
 use Mrzkit\LaravelEloquentEnhance\Utils\ApiResponseEntity;
 

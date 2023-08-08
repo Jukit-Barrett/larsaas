@@ -142,12 +142,4 @@ class TemplateEngine
     {
         return $this->replaceResult;
     }
-
-    /**
-     * @desc 测试用例
-     */
-    public static function test()
-    {
-
-    }
 }
