@@ -6,6 +6,7 @@ use App\Http\Requests\Activity\IndexActivityRequest;
 use App\Http\Requests\Activity\StoreActivityRequest;
 use App\Http\Requests\Activity\UpdateActivityRequest;
 use App\Services\ActivityService;
+use Mrzkit\LaravelCodeGenerator\TableDetail;
 use Mrzkit\LaravelCodeGenerator\TableInformation;
 use Mrzkit\LaravelCodeGenerator\TemplateCreators\ControllerTemplateCreator;
 use Mrzkit\LaravelCodeGenerator\TemplateCreators\ModelTemplateCreator;
@@ -100,41 +101,13 @@ class ActivityController extends Controller
 //            "controls" => "SystemHeader",
         ];
 
-        $tableInformation = new TableInformation($inputParams["tableName"], $inputParams["tablePrefix"]);
+        $tableDetail = new TableDetail($inputParams["tableName"], $inputParams["tablePrefix"]);
 
-        $templateHandler = new TemplateHandler();
+        dd($tableDetail);
+
+
 
         $result = [];
-
-        // Repository
-        $creator = new RepositoryTemplateCreator($templateHandler, $tableInformation);
-
-        $result["RepositoryTemplateCreator"] = $creator->handle();
-
-        // Service
-        $creator = new ServiceTemplateCreator($inputParams["controls"], $templateHandler, $tableInformation);
-
-        $result["ServiceTemplateCreator"] = $creator->handle();
-
-        // Request
-        $creator = new RequestTemplateCreator($inputParams["controls"], $templateHandler, $tableInformation);
-
-        $result["RequestTemplateCreator"] = $creator->handle();
-
-        // Controller
-        $creator = new ControllerTemplateCreator($inputParams["controls"], $templateHandler);
-
-        $result["ControllerTemplateCreator"] = $creator->handle();
-
-        // Route
-        $creator = new RouteTemplateCreator($inputParams["controls"], $templateHandler);
-
-        $result["RouteTemplateCreator"] = $creator->handle();
-
-        // UnitTest
-        $creator = new UnitTestTemplateCreator($inputParams["controls"], $templateHandler, $tableInformation);
-
-        $result["UnitTestTemplateCreator"] = $creator->handle();
 
         return ApiResponseEntity::success($result);
 
@@ -166,44 +139,42 @@ class ActivityController extends Controller
             throw new \Exception("格式有误，参考格式: A.B 或 A.B.C ");
         }
 
-        $tableInformation = new TableInformation($inputParams["tableName"], $inputParams["tablePrefix"]);
-
-        $templateHandler = new TemplateHandler();
+        $tableInformation = new TableDetail($inputParams["tableName"], $inputParams["tablePrefix"]);
 
         $result = [];
 
         // Model
-        $creator = new ModelTemplateCreator($templateHandler, $tableInformation);
+        $creator = new ModelTemplateCreator($tableInformation);
 
         $result["ModelTemplateCreator"] = $creator->handle();
 
         // Repository
-        $creator = new RepositoryTemplateCreator($templateHandler, $tableInformation);
+        $creator = new RepositoryTemplateCreator($tableInformation);
 
         $result["RepositoryTemplateCreator"] = $creator->handle();
 
         // Service
-        $creator = new ServiceTemplateCreator($inputParams["controls"], $templateHandler, $tableInformation);
+        $creator = new ServiceTemplateCreator($inputParams["controls"], $tableInformation);
 
         $result["ServiceTemplateCreator"] = $creator->handle();
 
         // Request
-        $creator = new RequestTemplateCreator($inputParams["controls"], $templateHandler, $tableInformation);
+        $creator = new RequestTemplateCreator($inputParams["controls"], $tableInformation);
 
         $result["RequestTemplateCreator"] = $creator->handle();
 
         // Controller
-        $creator = new ControllerTemplateCreator($inputParams["controls"], $templateHandler);
+        $creator = new ControllerTemplateCreator($inputParams["controls"]);
 
         $result["ControllerTemplateCreator"] = $creator->handle();
 
         // Route
-        $creator = new RouteTemplateCreator($inputParams["controls"], $templateHandler);
+        $creator = new RouteTemplateCreator($inputParams["controls"]);
 
         $result["RouteTemplateCreator"] = $creator->handle();
 
         // UnitTest
-        $creator = new UnitTestTemplateCreator($inputParams["controls"], $templateHandler, $tableInformation);
+        $creator = new UnitTestTemplateCreator($inputParams["controls"], $tableInformation);
 
         $result["UnitTestTemplateCreator"] = $creator->handle();
 

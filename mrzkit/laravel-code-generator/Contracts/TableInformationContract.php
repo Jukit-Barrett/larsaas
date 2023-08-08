@@ -5,66 +5,37 @@ namespace Mrzkit\LaravelCodeGenerator\Contracts;
 interface TableInformationContract
 {
     /**
-     * @return string
+     * @return string 表后缀
      */
-    public function getTablePrefix() : string;
+    public function getTablePrefix(): string;
 
     /**
-     * @return string
+     * @return string 表名
      */
-    public function getTableName() : string;
+    public function getTableName(): string;
 
     /**
-     * @return string
+     * @return string 表全名
      */
-    public function getTableFullName() : string;
+    public function getTableFullName(): string;
 
     /**
-     * @return bool
+     * @return array 表全列
      */
-    public function getTableShard() : bool;
+    public function getTableFullColumns(): array;
 
     /**
-     * @return array
+     * @return array 表字段
      */
-    public function getTableFullColumns() : array;
-
-    /**
-     * @return array
-     */
-    public function getTableFields() : array;
+    public function getTableFields(): array;
 
     /**
      * @desc
-     * @return string
+     * @return string 表后缀
      */
-    public function getTableSuffix() : string;
+    public function getTableSuffix(): string;
 
-    /**
-     * @desc
-     * @return int
-     */
-    public function getMaxShardCount() : int;
 
-    /**
-     * @desc
-     * @param int $n
-     * @return bool
-     */
-    public function isPower(int $n) : bool;
-
-    /**
-     * @desc
-     * @return array
-     */
-    public function getSuffixCount() : array;
-
-    /**
-     * @desc
-     * @return array
-     */
-    public function getShardCountConfig() : array;
-
-    public function getRenderTableName() : string;
+    public function getRenderTableName(): string;
 
 }
