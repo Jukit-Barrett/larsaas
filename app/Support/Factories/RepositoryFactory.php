@@ -5,6 +5,12 @@ namespace App\Support\Factories;
 class RepositoryFactory
 {
 
-    //{{HERE}}
+    public static function getSystemHeaderRepository(): \App\Repositories\SystemHeaderRepository
+{
+    return app(\App\Repositories\SystemHeaderRepository::class);
+}
+
+//{{HERE}}
+
 
 }

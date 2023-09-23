@@ -28,7 +28,7 @@ class ServiceTemplateCreator implements TemplateCreatorContract
     {
         $this->controlName = $this->tableInformationContract->getRenderTableName();
 
-        return new Service($this->controlName, $this->tableInformationContract);
+        return new Service($this->tableInformationContract);
     }
 
     public function handle(): array
