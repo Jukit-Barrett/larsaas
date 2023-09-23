@@ -10,11 +10,6 @@ use Mrzkit\LaravelCodeGenerator\Templates\ServiceTemplates\Service;
 class ServiceTemplateCreator implements TemplateCreatorContract
 {
     /**
-     * @var string
-     */
-    private $controlName;
-
-    /**
      * @var TableInformationContract
      */
     private $tableInformationContract;
@@ -26,8 +21,6 @@ class ServiceTemplateCreator implements TemplateCreatorContract
 
     protected function createService(): TemplateHandleContract
     {
-        $this->controlName = $this->tableInformationContract->getRenderTableName();
-
         return new Service($this->tableInformationContract);
     }
 
