@@ -2,10 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Activity\IndexActivityRequest;
-use App\Http\Requests\Activity\StoreActivityRequest;
-use App\Http\Requests\Activity\UpdateActivityRequest;
-use App\Services\ActivityService;
 use Mrzkit\LaravelCodeGenerator\TableDetail;
 use Mrzkit\LaravelCodeGenerator\TemplateCreators\ControllerTemplateCreator;
 use Mrzkit\LaravelCodeGenerator\TemplateCreators\ModelTemplateCreator;
@@ -16,40 +12,25 @@ use Mrzkit\LaravelCodeGenerator\TemplateCreators\RouteTemplateCreator;
 use Mrzkit\LaravelCodeGenerator\TemplateCreators\ServiceFactoryTemplateCreator;
 use Mrzkit\LaravelCodeGenerator\TemplateCreators\ServiceTemplateCreator;
 use Mrzkit\LaravelCodeGenerator\TemplateCreators\UnitTestTemplateCreator;
-use Mrzkit\LaravelCodeGenerator\TemplateUtil;
 use Mrzkit\LaravelEloquentEnhance\Utils\ApiResponseEntity;
 
-class ActivityController extends Controller
+class TestController extends Controller
 {
-    use TemplateUtil;
-
-    public function __construct(protected ActivityService $service)
-    {
-
-    }
 
     /**
      * Display a listing of the resource.
      */
-    public function index(IndexActivityRequest $request)
+    public function index($request)
     {
-        $params = $request->validated();
-
-        $list = $this->service->index($params);
-
-        return ApiResponseEntity::success($list);
+        return ApiResponseEntity::success(['index' => __METHOD__]);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreActivityRequest $request)
+    public function store($request)
     {
-        $params = $request->validated();
-
-        $result = $this->service->store($params);
-
-        return ApiResponseEntity::success(["store" => $result]);
+        return ApiResponseEntity::success(['store' => __METHOD__]);
     }
 
     /**
@@ -57,23 +38,16 @@ class ActivityController extends Controller
      */
     public function show(int $id)
     {
-        //
-        $object = $this->service->show($id);
-
-        return ApiResponseEntity::success($object);
-
+        return ApiResponseEntity::success(['show' => __METHOD__]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateActivityRequest $request, int $id)
+    public function update($request, int $id)
     {
-        $params = $request->validated();
 
-        $result = $this->service->update($id, $params);
-
-        return ApiResponseEntity::success(["update" => $result]);
+        return ApiResponseEntity::success(["update" => __METHOD__]);
     }
 
     /**
@@ -81,24 +55,20 @@ class ActivityController extends Controller
      */
     public function destroy(int $id)
     {
-        $result = $this->service->destroy($id);
 
-        return ApiResponseEntity::success(["destroy" => $result]);
     }
 
     public function restore(int $id)
     {
-        $result = $this->service->restore($id);
 
-        return ApiResponseEntity::success(["restore" => $result]);
     }
 
     public function codeGenerator()
     {
         $inputParams = [
             "tablePrefix" => env("DB_PREFIX"),
-            "tableName" => "system_header",
-//            "controls" => "SystemHeader",
+            "tableName"   => "system_header",
+            //            "controls" => "SystemHeader",
         ];
 
         $tableInformation = new TableDetail($inputParams["tableName"], $inputParams["tablePrefix"]);

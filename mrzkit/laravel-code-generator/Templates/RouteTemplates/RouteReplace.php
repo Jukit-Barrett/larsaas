@@ -23,9 +23,10 @@ class RouteReplace implements TemplateHandleContract
      */
     private $tableInformationContract;
 
-    public function __construct(TableInformationContract $tableInformationContract)
+    public function __construct(TableInformationContract $tableInformationContract, string $content)
     {
         $this->tableInformationContract = $tableInformationContract;
+        $this->content = $content;
     }
 
     public function handle(): TemplateGeneration

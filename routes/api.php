@@ -20,16 +20,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::group([], function (Router $router) {
-    $router->apiResource('activity', \App\Http\Controllers\ActivityController::class);
-
-    $router->post("activity-restore/{id}", [\App\Http\Controllers\ActivityController::class, "restore"]);
-
-    $router->get("codeGenerator", [\App\Http\Controllers\ActivityController::class, "codeGenerator"]);
-
+    $router->get("codeGenerator", [\App\Http\Controllers\TestController::class, "codeGenerator"]);
 });
 
 
 //{{HERE}}
-
 
 
