@@ -195,12 +195,12 @@ class ActivityController extends Controller
         $result["RepositoryTemplateCreator"] = $creator->handle();
 
         // Service
-        $creator = new ServiceTemplateCreator($inputParams["controls"], $tableInformation);
+        $creator = new ServiceTemplateCreator($inputParams["controls"]);
 
         $result["ServiceTemplateCreator"] = $creator->handle();
 
         // Request
-        $creator = new RequestTemplateCreator($inputParams["controls"], $tableInformation);
+        $creator = new RequestTemplateCreator($inputParams["controls"]);
 
         $result["RequestTemplateCreator"] = $creator->handle();
 
@@ -215,7 +215,7 @@ class ActivityController extends Controller
         $result["RouteTemplateCreator"] = $creator->handle();
 
         // UnitTest
-        $creator = new UnitTestTemplateCreator($inputParams["controls"], $tableInformation);
+        $creator = new UnitTestTemplateCreator($inputParams["controls"]);
 
         $result["UnitTestTemplateCreator"] = $creator->handle();
 
